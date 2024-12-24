@@ -1,0 +1,37 @@
+#pragma once
+#include <string>
+#include <vector>
+#include <regex>
+#include <shlobj.h>
+#include <iostream>
+#include <optional>
+#include <Windows.h>
+#include <filesystem>
+#include <TlHelp32.h>
+
+#ifndef UTILS_H
+#define UTILS_H
+
+namespace Utils
+{
+	namespace File
+	{
+		bool IsExistsFile(const std::string path);
+		bool IsExistsDirectory(const std::string path);
+		bool DoesFileExistInDirectory(const std::string path, const std::string file);
+		std::string GetAppDataPath(const GUID id);
+		std::vector<std::string> GetFileList(const std::string path, const std::string extension);
+		std::optional<std::string> FindDirectory(const std::string& startDir, const std::string& targetName);
+	}
+	namespace Process
+	{
+		DWORD GetProcessIDByName(const std::string processName);
+		bool IsProcessRunning(const std::string processName);
+		void StartProcess(const std::string target, const std::string argv);
+	}
+
+	std::vector<std::string> GetPhysicalDriveList();
+	std::string ConvertWideToMultiByte(const std::wstring& target_str);
+}
+
+#endif
