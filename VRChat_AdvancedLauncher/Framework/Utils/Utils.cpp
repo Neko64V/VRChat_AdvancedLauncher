@@ -111,9 +111,9 @@ namespace Utils
 		{
 			return GetProcessIDByName(processName) != 0;
 		}
-		void StartProcess(const std::string target, const std::string argv)
+		void StartProcess(const std::string target)
 		{
-
+			system(target.c_str());
 		}
 	}
 

@@ -27,7 +27,7 @@ namespace Utils
 	{
 		DWORD GetProcessIDByName(const std::string processName);
 		bool IsProcessRunning(const std::string processName);
-		void StartProcess(const std::string target, const std::string argv);
+		void StartProcess(const std::string path);
 	}
 
 	std::vector<std::string> GetPhysicalDriveList();

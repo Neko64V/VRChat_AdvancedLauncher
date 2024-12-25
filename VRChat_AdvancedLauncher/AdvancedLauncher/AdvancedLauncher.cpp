@@ -1,5 +1,12 @@
 #include "AdvancedLauncher.h"
 #include "../Utils/Utils.h"
+#include <sstream>
+
+BOOL CALLBACK MonitorEnumProc(HMONITOR hMonitor, HDC hdcMonitor, LPRECT lprcMonitor, LPARAM dwData) {
+	int* count = reinterpret_cast<int*>(dwData);
+	(*count)++;
+	return TRUE;
+}
 
 bool AdvancedLauncher::Init()
 {
@@ -24,6 +31,9 @@ bool AdvancedLauncher::Init()
 	// 初回かインストール先が変更された場合
 	if (!Utils::File::IsExistsDirectory(m_pVRChatInstallPath) || !Utils::File::DoesFileExistInDirectory(m_pVRChatInstallPath, "VRChat.exe"))
 	{
+		if (_DEBUG)
+			std::cout << "[-] VRCInstall path not found" << std::endl;
+
 		// VRChat自体のインストール先を取得
 		m_pVRChatInstallPath = GetVRChatInstallPath();
 
@@ -32,6 +42,12 @@ bool AdvancedLauncher::Init()
 		else 
 			cfg.WriteInstallPath(m_pAppData_Config, m_pVRChatInstallPath); // jsonに保存
 	}
+
+	// モニターの数を取得
+	EnumDisplayMonitors(NULL, NULL, MonitorEnumProc, reinterpret_cast<LPARAM>(&m_MonitorCount));
+
+	// config.jsonから設定をロード
+	cfg.LoadSetting(m_pAppData_Config, "config.json");
 
 	return true;
 }
@@ -108,11 +124,13 @@ std::string AdvancedLauncher::BuildCommand()
 	vOut << " \"vrchat://launch/";
 
 	if (g.g_DesktopMode) vOut << " --no-vr";
-	if (g.g_FullScreen) {
-		vOut << " -screen-fullscreen " + std::to_string((int)g.g_FullScreen);
-		vOut << " -screen-width " + std::to_string((int)GetSystemMetrics(SM_CXSCREEN));
-		vOut << " -screen-height " + std::to_string((int)GetSystemMetrics(SM_CYSCREEN));
-	}
+
+	vOut << " -screen-fullscreen " + std::to_string((int)g.g_FullScreen);
+	vOut << " -screen-width " + std::to_string((int)GetSystemMetrics(SM_CXSCREEN));
+	vOut << " -screen-height " + std::to_string((int)GetSystemMetrics(SM_CYSCREEN));
+
+	std::string monitor_str = " -monitor " + std::to_string((int)g.g_Monitor + 1);
+	vOut << monitor_str;
 
 	if (g.g_MaxFPSEnable) {
 		std::string framerate_str = " --fps=" + std::to_string((int)g.g_MaxFPS);
@@ -144,6 +162,8 @@ std::string AdvancedLauncher::BuildCommand()
 	}
 
 	vOut << "\"";
+
+	std::cout << vOut.str() << std::endl;
 
 	return vOut.str();
 }

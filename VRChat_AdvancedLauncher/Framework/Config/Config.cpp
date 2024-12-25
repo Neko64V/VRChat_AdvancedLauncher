@@ -4,21 +4,66 @@
 Config g;
 ConfigManager cfg;
 
-void ConfigManager::LoadSetting(const std::string filename)
+void ConfigManager::LoadSetting(const std::string path, const std::string filename)
 {
     if (filename.empty())
         return;
 
-    std::ifstream f(filename);
+    std::string p = path + "\\" + filename;
+    std::ifstream f(p);
+    json j;
+    f >> j;
 
+    g.g_AvatarTest = j["AvatarTest"];
+    g.g_CCX_Enable = j["CCXEnable"];
+    g.g_CCX_Option = j["CCXOption"];
+    g.g_DesktopMode = j["DesktopMode"];
+    g.g_FullScreen = j["FullScreen"];
+    g.g_MaxFPS = j["MaxFPS"];
+    g.g_MaxFPSEnable = j["MaxFPSEnable"];
+    g.g_Monitor = j["Monitor"];
+    g.g_OfflineTest = j["OffliteTest"];
+    g.g_ProfileID = j["ProfileID"];
+    g.g_WorldTest = j["WorldTest"];
+
+    f.close();
 }
 
-void ConfigManager::SaveSetting(const std::string filename)
+void ConfigManager::SaveSetting(const std::string path, const std::string filename)
 {
     if (filename.empty())
         return;
 
-    std::ifstream f(filename);
+    std::string configPath = path + "\\" + filename;
+    std::ifstream file(configPath);
+
+    if (file.good()) {
+        json JSON;
+        file >> JSON;
+
+        JSON["AvatarTest"] = g.g_AvatarTest;
+        JSON["CCXEnable"] = g.g_CCX_Enable;
+        JSON["CCXOption"] = g.g_CCX_Option;
+        JSON["DesktopMode"] = g.g_DesktopMode;
+        JSON["FullScreen"] = g.g_FullScreen;
+        JSON["MaxFPS"] = g.g_MaxFPS;
+        JSON["MaxFPSEnable"] = g.g_MaxFPSEnable;
+        JSON["Monitor"] = g.g_Monitor;
+        JSON["OffliteTest"] = g.g_OfflineTest;
+        JSON["ProfileID"] = g.g_ProfileID;
+        JSON["WorldTest"] = g.g_WorldTest;
+
+        std::ofstream outputFile(configPath, std::ios::trunc);
+        if (outputFile.good()) {
+            outputFile << JSON.dump(4);
+            std::cout << "[ dev ] jsonをアップデート" << std::endl;
+        }
+        else {
+            std::cerr << "[ dev ] jsonのアップデートに失敗" << std::endl;
+        }
+    }
+
+    file.close();
 }
 
 std::string ConfigManager::ReadInstallPath(const std::string& appdata_local)

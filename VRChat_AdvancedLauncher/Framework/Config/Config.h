@@ -15,6 +15,7 @@ struct Config
     bool g_FullScreen  = false;
     bool g_MaxFPSEnable = true;
     int  g_MaxFPS = 144;
+    int  g_Monitor = 0;
     bool g_OfflineTest = false;
     bool g_WorldTest = false;
     bool g_AvatarTest = false;
@@ -29,8 +30,8 @@ class ConfigManager
 private:
 
 public:
-    void LoadSetting(const std::string filename);
-    void SaveSetting(const std::string filename);
+    void LoadSetting(const std::string path, const std::string filename);
+    void SaveSetting(const std::string path, const std::string filename);
     std::string ReadInstallPath(const std::string& appdata_local);
     void WriteInstallPath(const std::string& appdata_local, const std::string& vrc_path);
 };
