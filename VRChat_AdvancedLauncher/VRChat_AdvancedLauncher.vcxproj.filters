@@ -118,5 +118,9 @@
     <None Include="..\.gitignore" />
     <None Include="..\LICENSE" />
     <None Include="..\README.md" />
+    <None Include="..\config.json" />
+    <None Include="..\setup.bat">
+      <Filter>ソース ファイル</Filter>
+    </None>
   </ItemGroup>
 </Project>
