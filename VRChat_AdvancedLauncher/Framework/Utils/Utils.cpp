@@ -115,6 +115,11 @@ namespace Utils
 		{
 			system(target.c_str());
 		}
+		void StopProcess(const std::string processName)
+		{
+			std::string cmd = "taskkill /IM " + processName + " /F";
+			system(cmd.c_str());
+		}
 	}
 
 	std::vector<std::string> GetPhysicalDriveList()

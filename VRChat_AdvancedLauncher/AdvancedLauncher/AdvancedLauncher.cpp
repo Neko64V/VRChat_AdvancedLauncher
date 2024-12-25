@@ -31,9 +31,6 @@ bool AdvancedLauncher::Init()
 	// 初回かインストール先が変更された場合
 	if (!Utils::File::IsExistsDirectory(m_pVRChatInstallPath) || !Utils::File::DoesFileExistInDirectory(m_pVRChatInstallPath, "VRChat.exe"))
 	{
-		if (_DEBUG)
-			std::cout << "[-] VRCInstall path not found" << std::endl;
-
 		// VRChat自体のインストール先を取得
 		m_pVRChatInstallPath = GetVRChatInstallPath();
 
@@ -83,36 +80,6 @@ std::string AdvancedLauncher::GetVRChatInstallPath()
 	}
 
 	return std::string();
-}
-
-std::string AdvancedLauncher::GetLatestLogFile(const std::string& dir)
-{
-	std::string latest_file;
-	std::time_t latest_time = 0;
-	std::regex log_pattern(R"(output_log_\d{4}-\d{2}-\d{2}_\d{2}-\d{2}-\d{2}\.txt)");
-
-	for (const auto& entry : std::filesystem::directory_iterator(dir))
-	{
-		if (entry.is_regular_file())
-		{
-			std::string file_name = entry.path().filename().string();
-
-			if (std::regex_match(file_name, log_pattern))
-			{
-				std::tm tm = {};
-				std::istringstream ss(file_name.substr(11, 19));
-				ss >> std::get_time(&tm, "%Y-%m-%d_%H-%M-%S");
-				std::time_t fileTime = std::mktime(&tm);
-
-				if (fileTime > latest_time) {
-					latest_time = fileTime;
-					latest_file = entry.path().string();
-				}
-			}
-		}
-	}
-
-	return latest_file;
 }
 
 std::string AdvancedLauncher::BuildCommand()
@@ -166,4 +133,34 @@ std::string AdvancedLauncher::BuildCommand()
 	std::cout << vOut.str() << std::endl;
 
 	return vOut.str();
+}
+
+std::string AdvancedLauncher::GetLatestVRChatLogFile()
+{
+	std::string latest_file;
+	std::time_t latest_time = 0;
+	std::regex log_pattern(R"(output_log_\d{4}-\d{2}-\d{2}_\d{2}-\d{2}-\d{2}\.txt)");
+
+	for (const auto& entry : std::filesystem::directory_iterator(m_pAppData_VRChat))
+	{
+		if (entry.is_regular_file())
+		{
+			std::string file_name = entry.path().filename().string();
+
+			if (std::regex_match(file_name, log_pattern))
+			{
+				std::tm tm = {};
+				std::istringstream ss(file_name.substr(11, 19));
+				ss >> std::get_time(&tm, "%Y-%m-%d_%H-%M-%S");
+				std::time_t fileTime = std::mktime(&tm);
+
+				if (fileTime > latest_time) {
+					latest_time = fileTime;
+					latest_file = entry.path().string();
+				}
+			}
+		}
+	}
+
+	return latest_file;
 }

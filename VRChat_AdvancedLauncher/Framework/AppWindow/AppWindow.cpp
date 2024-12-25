@@ -18,6 +18,12 @@ bool AppWindow::InitWindow()
     // Create application window
     ImGui_ImplWin32_EnableDpiAwareness();
     wc = { sizeof(wc), CS_CLASSDC, WndProc, 0L, 0L, GetModuleHandle(nullptr), nullptr, nullptr, nullptr, L"Launcher", L"VRC_AdvancedLauncher", nullptr};
+
+    if (FindWindowW(wc.lpszClassName, wc.lpszMenuName)) {
+        MessageBox(nullptr, "既に実行中のアプリケーションが存在します。", "ERROR", MB_TOPMOST | MB_OK | MB_ICONERROR);
+        return false;
+    }
+
     RegisterClassExW(&wc);
     hwnd = CreateWindowW(wc.lpszClassName, wc.lpszMenuName, WS_OVERLAPPEDWINDOW, 200, 200, 50, 50, nullptr, nullptr, wc.hInstance, nullptr);
   
@@ -30,6 +36,7 @@ bool AppWindow::InitWindow()
         return false;
     }
 
+    ShowWindow(hwnd, SW_SHOWDEFAULT);
     ShowWindow(hwnd, SW_HIDE);
     UpdateWindow(hwnd);
 

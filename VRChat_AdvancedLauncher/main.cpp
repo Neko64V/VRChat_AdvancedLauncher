@@ -1,5 +1,6 @@
 #include "AdvancedLauncher\AdvancedLauncher.h"
-#include <thread>
+
+AdvancedLauncher* launcher = new AdvancedLauncher();
 
 // DEBUG時にはコンソールウィンドウを表示する
 #if _DEBUG
@@ -13,17 +14,44 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     if (!wnd->InitWindow())
         return 1;
 
+    if (!launcher->Init())
+        return 2;
+
+    std::thread([&]() { launcher->RestarterFunc(); }).detach();
+
     wnd->WindowLoop();
     wnd->DestroyAppWindow();
-    delete wnd;
+    delete wnd, launcher;
 
     return 0;
 }
 
 void AppWindow::WindowLoop()
 {
-    AdvancedLauncher* launcher = new AdvancedLauncher();
-    launcher->Init();
+    // VRChat Style
+    ImGuiStyle& style = ImGui::GetStyle();
+    style.FrameRounding = 4.f;
+    style.ScrollbarRounding = 12.f;
+    style.GrabRounding = 4.f;
+    style.FrameBorderSize = 1.f;
+
+    ImVec4* colors = style.Colors;
+    colors[ImGuiCol_WindowBg]               = ImVec4(0.08f, 0.08f, 0.08f, 1.00f);
+    colors[ImGuiCol_Border]                 = ImVec4(0.12f, 0.25f, 0.28f, 0.50f);
+    colors[ImGuiCol_FrameBg]                = ImVec4(0.09f, 0.19f, 0.21f, 1.00f);
+    colors[ImGuiCol_FrameBgHovered]         = ImVec4(0.13f, 0.23f, 0.25f, 1.00f);
+    colors[ImGuiCol_FrameBgActive]          = ImVec4(0.17f, 0.27f, 0.29f, 1.00f);
+    colors[ImGuiCol_TitleBg]                = ImVec4(0.09f, 0.58f, 0.64f, 1.00f);
+    colors[ImGuiCol_TitleBgActive]          = ImVec4(0.09f, 0.58f, 0.64f, 1.00f);
+    colors[ImGuiCol_CheckMark]              = ImVec4(0.17f, 0.67f, 0.76f, 1.00f);
+    colors[ImGuiCol_SliderGrab]             = ImVec4(0.17f, 0.67f, 0.76f, 1.00f);
+    colors[ImGuiCol_SliderGrabActive]       = ImVec4(0.17f, 0.67f, 0.76f, 1.00f);
+    colors[ImGuiCol_Button]                 = ImVec4(0.09f, 0.19f, 0.21f, 1.00f);
+    colors[ImGuiCol_ButtonHovered]          = ImVec4(0.13f, 0.23f, 0.25f, 1.00f);
+    colors[ImGuiCol_ButtonActive]           = ImVec4(0.09f, 0.58f, 0.64f, 1.00f);
+    colors[ImGuiCol_Header]                 = ImVec4(0.09f, 0.19f, 0.21f, 1.00f);
+    colors[ImGuiCol_HeaderHovered]          = ImVec4(0.13f, 0.23f, 0.25f, 1.00f);
+    colors[ImGuiCol_HeaderActive]           = ImVec4(0.09f, 0.58f, 0.64f, 1.00f);
 
     while (g.ApplicationActive)
     {
@@ -64,6 +92,4 @@ void AppWindow::WindowLoop()
         HRESULT hr = g_pSwapChain->Present(1, 0);
         g_SwapChainOccluded = (hr == DXGI_STATUS_OCCLUDED);
     }
-
-    delete launcher;
 }

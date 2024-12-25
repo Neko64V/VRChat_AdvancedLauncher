@@ -9,6 +9,7 @@ struct Config
 {
     // System
     bool ApplicationActive = true;
+    bool AutoRestarter = false;
    
     // Launcher
     bool g_DesktopMode = false;
