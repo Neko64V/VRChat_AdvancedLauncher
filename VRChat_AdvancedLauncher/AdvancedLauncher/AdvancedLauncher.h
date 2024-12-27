@@ -6,6 +6,7 @@
 class AdvancedLauncher
 {
 private:
+	int menuID;
 	int m_MonitorCount;
 	bool m_processStarted;
 	void ProcessThread();
@@ -24,5 +25,4 @@ public:
 	// Menu
 	void MainMenu();
 	void LauncherMenu();
-	void RestarterMenu();
 };

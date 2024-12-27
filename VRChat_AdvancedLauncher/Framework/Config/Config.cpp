@@ -10,23 +10,24 @@ void ConfigManager::LoadSetting(const std::string path, const std::string filena
         return;
 
     std::string p = path + "\\" + filename;
-    std::ifstream f(p);
-    json j;
-    f >> j;
+    std::ifstream file(p);
+    json JSON;
+    file >> JSON;
 
-    g.g_AvatarTest = j["AvatarTest"];
-    g.g_CCX_Enable = j["CCXEnable"];
-    g.g_CCX_Option = j["CCXOption"];
-    g.g_DesktopMode = j["DesktopMode"];
-    g.g_FullScreen = j["FullScreen"];
-    g.g_MaxFPS = j["MaxFPS"];
-    g.g_MaxFPSEnable = j["MaxFPSEnable"];
-    g.g_Monitor = j["Monitor"];
-    g.g_OfflineTest = j["OffliteTest"];
-    g.g_ProfileID = j["ProfileID"];
-    g.g_WorldTest = j["WorldTest"];
+    g.AutoRestarter = JSON["AutoRestarter"];
+    g.g_AvatarTest = JSON["AvatarTest"];
+    g.g_CCX_Enable = JSON["CCXEnable"];
+    g.g_CCX_Option = JSON["CCXOption"];
+    g.g_DesktopMode = JSON["DesktopMode"];
+    g.g_FullScreen = JSON["FullScreen"];
+    g.g_MaxFPS = JSON["MaxFPS"];
+    g.g_MaxFPSEnable = JSON["MaxFPSEnable"];
+    g.g_Monitor = JSON["Monitor"];
+    g.g_OfflineTest = JSON["OffliteTest"];
+    g.g_ProfileID = JSON["ProfileID"];
+    g.g_WorldTest = JSON["WorldTest"];
 
-    f.close();
+    file.close();
 }
 
 void ConfigManager::SaveSetting(const std::string path, const std::string filename)
@@ -41,6 +42,7 @@ void ConfigManager::SaveSetting(const std::string path, const std::string filena
         json JSON;
         file >> JSON;
 
+        JSON["AutoRestarter"] = g.AutoRestarter;
         JSON["AvatarTest"] = g.g_AvatarTest;
         JSON["CCXEnable"] = g.g_CCX_Enable;
         JSON["CCXOption"] = g.g_CCX_Option;

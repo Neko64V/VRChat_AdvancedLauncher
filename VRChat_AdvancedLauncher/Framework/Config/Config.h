@@ -28,8 +28,6 @@ struct Config
 // https://github.com/nlohmann/json
 class ConfigManager
 {
-private:
-
 public:
     void LoadSetting(const std::string path, const std::string filename);
     void SaveSetting(const std::string path, const std::string filename);

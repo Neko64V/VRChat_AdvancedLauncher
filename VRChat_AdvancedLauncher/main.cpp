@@ -36,22 +36,22 @@ void AppWindow::WindowLoop()
     style.FrameBorderSize = 1.f;
 
     ImVec4* colors = style.Colors;
-    colors[ImGuiCol_WindowBg]               = ImVec4(0.08f, 0.08f, 0.08f, 1.00f);
-    colors[ImGuiCol_Border]                 = ImVec4(0.12f, 0.25f, 0.28f, 0.50f);
-    colors[ImGuiCol_FrameBg]                = ImVec4(0.09f, 0.19f, 0.21f, 1.00f);
-    colors[ImGuiCol_FrameBgHovered]         = ImVec4(0.13f, 0.23f, 0.25f, 1.00f);
-    colors[ImGuiCol_FrameBgActive]          = ImVec4(0.17f, 0.27f, 0.29f, 1.00f);
-    colors[ImGuiCol_TitleBg]                = ImVec4(0.09f, 0.58f, 0.64f, 1.00f);
-    colors[ImGuiCol_TitleBgActive]          = ImVec4(0.09f, 0.58f, 0.64f, 1.00f);
-    colors[ImGuiCol_CheckMark]              = ImVec4(0.17f, 0.67f, 0.76f, 1.00f);
-    colors[ImGuiCol_SliderGrab]             = ImVec4(0.17f, 0.67f, 0.76f, 1.00f);
-    colors[ImGuiCol_SliderGrabActive]       = ImVec4(0.17f, 0.67f, 0.76f, 1.00f);
-    colors[ImGuiCol_Button]                 = ImVec4(0.09f, 0.19f, 0.21f, 1.00f);
-    colors[ImGuiCol_ButtonHovered]          = ImVec4(0.13f, 0.23f, 0.25f, 1.00f);
-    colors[ImGuiCol_ButtonActive]           = ImVec4(0.09f, 0.58f, 0.64f, 1.00f);
-    colors[ImGuiCol_Header]                 = ImVec4(0.09f, 0.19f, 0.21f, 1.00f);
-    colors[ImGuiCol_HeaderHovered]          = ImVec4(0.13f, 0.23f, 0.25f, 1.00f);
-    colors[ImGuiCol_HeaderActive]           = ImVec4(0.09f, 0.58f, 0.64f, 1.00f);
+    colors[ImGuiCol_WindowBg] = ImVec4(0.08f, 0.08f, 0.08f, 1.00f);
+    colors[ImGuiCol_Border] = ImVec4(0.12f, 0.25f, 0.28f, 0.50f);
+    colors[ImGuiCol_FrameBg] = ImVec4(0.09f, 0.19f, 0.21f, 1.00f);
+    colors[ImGuiCol_FrameBgHovered] = ImVec4(0.13f, 0.23f, 0.25f, 1.00f);
+    colors[ImGuiCol_FrameBgActive] = ImVec4(0.17f, 0.27f, 0.29f, 1.00f);
+    colors[ImGuiCol_TitleBg] = ImVec4(0.09f, 0.58f, 0.64f, 1.00f);
+    colors[ImGuiCol_TitleBgActive] = ImVec4(0.09f, 0.58f, 0.64f, 1.00f);
+    colors[ImGuiCol_CheckMark] = ImVec4(0.17f, 0.67f, 0.76f, 1.00f);
+    colors[ImGuiCol_SliderGrab] = ImVec4(0.17f, 0.67f, 0.76f, 1.00f);
+    colors[ImGuiCol_SliderGrabActive] = ImVec4(0.17f, 0.67f, 0.76f, 1.00f);
+    colors[ImGuiCol_Button] = ImVec4(0.09f, 0.19f, 0.21f, 1.00f);
+    colors[ImGuiCol_ButtonHovered] = ImVec4(0.13f, 0.23f, 0.25f, 1.00f);
+    colors[ImGuiCol_ButtonActive] = ImVec4(0.09f, 0.58f, 0.64f, 1.00f);
+    colors[ImGuiCol_Header] = ImVec4(0.09f, 0.19f, 0.21f, 1.00f);
+    colors[ImGuiCol_HeaderHovered] = ImVec4(0.13f, 0.23f, 0.25f, 1.00f);
+    colors[ImGuiCol_HeaderActive] = ImVec4(0.09f, 0.58f, 0.64f, 1.00f);
 
     while (g.ApplicationActive)
     {
@@ -73,7 +73,10 @@ void AppWindow::WindowLoop()
         ImGui_ImplWin32_NewFrame();
         ImGui::NewFrame();
 
+        launcher->MainMenu();
         launcher->LauncherMenu();
+
+        ImGui::End();
 
         // Rendering
         ImGui::Render();

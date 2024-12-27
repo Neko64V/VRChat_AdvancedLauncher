@@ -49,6 +49,20 @@ bool AdvancedLauncher::Init()
 	return true;
 }
 
+void AdvancedLauncher::ProcessThread()
+{
+	cfg.SaveSetting(m_pAppData_Config, "config.json");
+
+	std::string run_cmd = m_pVRChatInstallPath + "\\" + BuildCommand();
+	Utils::Process::StartProcess(run_cmd);
+
+	while (!Utils::Process::IsProcessRunning("VRChat.exe"))
+		std::this_thread::sleep_for(std::chrono::seconds(5));
+
+	m_processStarted = true;
+}
+
+
 std::string AdvancedLauncher::GetVRChatInstallPath()
 {
 	std::vector<std::string> steam_dir_list;

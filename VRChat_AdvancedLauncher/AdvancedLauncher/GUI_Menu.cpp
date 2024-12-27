@@ -2,22 +2,33 @@
 #include "../Utils/Utils.h"
 #include <thread>
 
-void AdvancedLauncher::ProcessThread()
-{
-    cfg.SaveSetting(m_pAppData_Config, "config.json");
-
-    std::string run_cmd = m_pVRChatInstallPath + "\\" + BuildCommand();
-    Utils::Process::StartProcess(run_cmd);
-
-    while (!Utils::Process::IsProcessRunning("VRChat.exe"))
-        std::this_thread::sleep_for(std::chrono::seconds(5));
-
-    m_processStarted = true;
-}
-
 void AdvancedLauncher::MainMenu()
 {
+    ImGui::SetNextWindowSize(ImVec2(800.f, 500.f));
+    ImGui::Begin("VRChat - Advanced Launcher", &g.ApplicationActive, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize);
 
+    ImGui::BeginChild("##C1", ImVec2(ImGui::GetContentRegionAvail().x / 2.f, ImGui::GetContentRegionAvail().y));
+
+    ImGui::SeparatorText("Restarter");
+
+    ImGui::Checkbox("AutoRestart", &g.AutoRestarter);
+
+    ImGui::Spacing();
+    ImGui::NewLine();
+    
+    ImGui::SeparatorText("Path");
+
+    ImGui::Text("[+] VRChat Path");
+    ImGui::Text(m_pVRChatInstallPath.c_str());
+
+    ImGui::SameLine();
+
+    if (ImGui::Button("X"))
+        std::thread([&]() { Utils::File::SelectDirectoryPath(m_pVRChatInstallPath); }).detach();
+
+    ImGui::EndChild();
+
+    ImGui::SameLine();
 }
 
 void AdvancedLauncher::LauncherMenu()
@@ -27,6 +38,9 @@ void AdvancedLauncher::LauncherMenu()
     static const char* coreList[] = { "3 [ Ryzen5  (3Core * 2CCX)]", "4 [ Ryzen7  (4Core * 2CCX)]", "6 [ Ryzen9  (6Core * 2CCX)]", "8 [ Ryzen9+ (8Core * 2CCX)]" };
     const char** monitorList = new const char* [m_MonitorCount];
 
+    ImGuiStyle& style = ImGui::GetStyle();
+    style.SeparatorTextBorderSize = 1.f;
+
     for (int j = 0; j < m_MonitorCount; j++) {
         std::string itemStr = "Monitor " + std::to_string(j + 1);
         char* itemCopy = new char[itemStr.size() + 1];
@@ -34,11 +48,7 @@ void AdvancedLauncher::LauncherMenu()
         monitorList[j] = itemCopy;
     }
 
-    ImGuiStyle& style = ImGui::GetStyle();
-    style.SeparatorTextBorderSize = 1.f;
-
-    ImGui::SetNextWindowSize(ImVec2(400.f, 500.f));
-    ImGui::Begin("VRChat - Advanced Launcher", &g.ApplicationActive, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize);
+    ImGui::BeginChild("##C2-0", ImVec2(ImGui::GetContentRegionAvail()));
 
     ImGui::TextColored(TitleTextCol, "Display");
     ImGui::Separator();
@@ -70,7 +80,7 @@ void AdvancedLauncher::LauncherMenu()
         ImGui::Combo("Core per CCX", &g.g_CCX_Option, coreList, IM_ARRAYSIZE(coreList));
 
     // Launch
-    ImGui::SetCursorPosY(ImGui::GetWindowHeight() - 30.f - (style.WindowPadding.y));
+    ImGui::SetCursorPosY(ImGui::GetWindowHeight() - 30.f);
     if (ImGui::Button("Launch", ImVec2(ImGui::GetContentRegionAvail().x, 30.f))) {
 
         if (Utils::Process::IsProcessRunning("VRChat.exe"))
@@ -85,16 +95,11 @@ void AdvancedLauncher::LauncherMenu()
         }
     }
 
-    ImGui::End();
+    ImGui::EndChild();
 
     // CleanUp
     for (int k = 0; k < m_MonitorCount; k++)
         delete[] monitorList[k];
 
     delete[] monitorList;
-}
-
-void AdvancedLauncher::RestarterMenu()
-{
-
 }
