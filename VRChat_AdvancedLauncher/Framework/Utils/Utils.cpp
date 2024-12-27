@@ -24,6 +24,46 @@ namespace Utils
 
 			return false;
 		}
+		void SelectFilePath(std::string& vOut)
+		{
+			OPENFILENAME ofn;
+			char szFile[260]{};
+
+			ZeroMemory(&ofn, sizeof(ofn));
+			ofn.lStructSize = sizeof(ofn);
+			ofn.hwndOwner = NULL;
+			ofn.lpstrFile = szFile;
+			ofn.nMaxFile = sizeof(szFile);
+			ofn.lpstrFilter = "All Files\0*.*\0Text Files\0*.TXT\0";
+			ofn.nFilterIndex = 1;
+			ofn.lpstrFileTitle = NULL;
+			ofn.nMaxFileTitle = 0;
+			ofn.lpstrInitialDir = NULL;
+			ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST;
+
+			if (GetOpenFileName(&ofn) == TRUE) {
+				vOut = ofn.lpstrFile;
+			}
+		}
+		void SelectDirectoryPath(std::string& vOut)
+		{
+			// Path
+			BROWSEINFO bf{};
+			char szFolderPath[MAX_PATH]{};
+
+			bf.lpszTitle = "Select a folder:";
+			bf.ulFlags = BIF_RETURNONLYFSDIRS | BIF_NEWDIALOGSTYLE;
+
+			// ダイアログを表示
+			LPITEMIDLIST pidl = SHBrowseForFolder(&bf);
+			if (pidl != NULL) {
+				// 選択されたフォルダーのパスを取得
+				if (SHGetPathFromIDList(pidl, szFolderPath)) {
+					vOut = szFolderPath;
+				}
+				CoTaskMemFree(pidl); // メモリを解放
+			}
+		}
 		// 参照：https://learn.microsoft.com/ja-jp/windows/win32/shell/knownfolderid
 		std::string GetAppDataPath(const GUID id)
 		{
