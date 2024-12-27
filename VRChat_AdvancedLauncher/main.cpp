@@ -33,6 +33,7 @@ void AppWindow::WindowLoop()
     style.FrameRounding = 4.f;
     style.ScrollbarRounding = 12.f;
     style.GrabRounding = 4.f;
+    style.WindowBorderSize = 0.f;
     style.FrameBorderSize = 1.f;
 
     ImVec4* colors = style.Colors;
@@ -73,8 +74,21 @@ void AppWindow::WindowLoop()
         ImGui_ImplWin32_NewFrame();
         ImGui::NewFrame();
 
-        launcher->MainMenu();
+        ImGuiStyle& style = ImGui::GetStyle();
+
+        ImGui::SetNextWindowPos(ImVec2(0.f, 0.f));
+        ImGui::SetNextWindowSize(ImVec2(800.f - (style.WindowPadding.x * 2), 500.f - (style.WindowPadding.y * 2)));
+        ImGui::Begin("VRChat - Advanced Launcher", &g.ApplicationActive, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoTitleBar);
+
+        ImGui::BeginChild("##C1", ImVec2(ImGui::GetContentRegionAvail().x / 2.f, ImGui::GetContentRegionAvail().y));
         launcher->LauncherMenu();
+        ImGui::EndChild();
+
+        ImGui::SameLine();
+
+        ImGui::BeginChild("##C2-0", ImVec2(ImGui::GetContentRegionAvail()));
+        launcher->MiscMenu();
+        ImGui::EndChild();
 
         ImGui::End();
 

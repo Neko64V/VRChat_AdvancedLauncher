@@ -25,8 +25,8 @@ bool AppWindow::InitWindow()
     }
 
     RegisterClassExW(&wc);
-    hwnd = CreateWindowW(wc.lpszClassName, wc.lpszMenuName, WS_OVERLAPPEDWINDOW, 200, 200, 50, 50, nullptr, nullptr, wc.hInstance, nullptr);
-  
+    hwnd = CreateWindowW(wc.lpszClassName, wc.lpszMenuName, WS_MINIMIZEBOX | WS_SYSMENU, 200, 200, 800, 500, nullptr, nullptr, wc.hInstance, nullptr);
+
     // Initialize Direct3D
     if (!CreateDeviceD3D(hwnd))
     {
@@ -37,7 +37,6 @@ bool AppWindow::InitWindow()
     }
 
     ShowWindow(hwnd, SW_SHOWDEFAULT);
-    ShowWindow(hwnd, SW_HIDE);
     UpdateWindow(hwnd);
 
     // Setup Dear ImGui context
@@ -46,7 +45,7 @@ bool AppWindow::InitWindow()
     ImGuiIO& io = ImGui::GetIO(); (void)io;
     io.LogFilename = nullptr;
     io.IniFilename = nullptr;
-    io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;       // Enable Multi-Viewport / Platform Windows
+    //io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;       // Enable Multi-Viewport / Platform Windows
 
     // Setup Dear ImGui style
     ImGui::StyleColorsDark();

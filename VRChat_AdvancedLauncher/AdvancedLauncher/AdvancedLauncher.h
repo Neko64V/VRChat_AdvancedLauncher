@@ -23,6 +23,6 @@ public:
 	void RestarterFunc();
 
 	// Menu
-	void MainMenu();
+	void MiscMenu();
 	void LauncherMenu();
 };
