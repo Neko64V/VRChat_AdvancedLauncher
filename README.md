@@ -1,9 +1,9 @@
 ## 概要
 VRChatの起動オプションをGUIベースで変更可能にしたちょっと便利なランチャー。  
-いちいちSteamやショートカットを編集しなくても簡単に起動構成がいじれます。  
+いちいちSteamやショートカットを編集しなくても簡単に起動構成がいじれるのでアバター改変が捗ります。
 
 ## 使い方
-1. setup.batを実行します。
+1. setup -> setup.batを実行します。
 2. VRChatAdvancedLauncher.exeを実行します。
 3. 以上です。
 
@@ -16,9 +16,3 @@ VRChatの起動オプションをGUIベースで変更可能にしたちょっ�
 ## config.json
 AppData->Local->VRChatAdvancedLauncher 内にあります。  
 VRChatのインストール先やLauncherの設定が保存されており、自動でセーブ/ロードされます。
-
-## Q&A
-```
-Q. 一瞬変なウィンドウが見えるんだが
-A. いくつかの機能ではWindows標準のコマンドを使用しているのでその影響です。
-```
