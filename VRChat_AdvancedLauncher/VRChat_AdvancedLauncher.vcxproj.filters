@@ -31,6 +31,9 @@
     <Filter Include="Framework\Utils">
       <UniqueIdentifier>{6c2085f3-d9aa-42c2-9fd6-c1af331b0d02}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Setup">
+      <UniqueIdentifier>{4a01993c-4b62-43ec-85db-afe38d8a1d01}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AdvancedLauncher\AdvancedLauncher.h">
@@ -118,5 +121,11 @@
     <None Include="..\.gitignore" />
     <None Include="..\LICENSE" />
     <None Include="..\README.md" />
+    <None Include="..\Setup\config.json">
+      <Filter>Setup</Filter>
+    </None>
+    <None Include="..\Setup\setup.bat">
+      <Filter>Setup</Filter>
+    </None>
   </ItemGroup>
 </Project>
