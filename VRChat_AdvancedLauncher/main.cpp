@@ -78,7 +78,7 @@ void AppWindow::WindowLoop()
 
         ImGui::SetNextWindowPos(ImVec2(0.f, 0.f));
         ImGui::SetNextWindowSize(ImVec2(800.f - (style.WindowPadding.x * 2), 500.f - (style.WindowPadding.y * 2)));
-        ImGui::Begin("VRChat - Advanced Launcher", &g.ApplicationActive, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoTitleBar);
+        ImGui::Begin("VRChat - Advanced Launcher", nullptr, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize);
 
         ImGui::BeginChild("##C1", ImVec2(ImGui::GetContentRegionAvail().x / 2.f, ImGui::GetContentRegionAvail().y));
         launcher->LauncherMenu();

@@ -19,7 +19,7 @@ namespace Utils
 		bool IsExistsFile(const std::string path);
 		bool IsExistsDirectory(const std::string path);
 		void SelectFilePath(std::string& vOut);
-		void SelectDirectoryPath(std::string& vOut);
+		void SelectDirectoryPath(const char* str, std::string& vOut);
 		bool DoesFileExistInDirectory(const std::string path, const std::string file);
 		std::string GetAppDataPath(const GUID id);
 		std::vector<std::string> GetFileList(const std::string path, const std::string extension);

@@ -1,6 +1,5 @@
 #include "AdvancedLauncher.h"
 #include "../Utils/Utils.h"
-#include <sstream>
 
 BOOL CALLBACK MonitorEnumProc(HMONITOR hMonitor, HDC hdcMonitor, LPRECT lprcMonitor, LPARAM dwData) {
 	int* count = reinterpret_cast<int*>(dwData);
@@ -10,9 +9,13 @@ BOOL CALLBACK MonitorEnumProc(HMONITOR hMonitor, HDC hdcMonitor, LPRECT lprcMoni
 
 bool AdvancedLauncher::Init()
 {
+	// AppData\Local(Low)からのパス
+	static std::string ConfigPath	= "\\VRChatAdvancedLauncher";
+	static std::string VRC_LogPath	= "\\VRChat\\VRChat";
+
 	// 各種Pathを取得
-	m_pAppData_Config = Utils::File::GetAppDataPath(FOLDERID_LocalAppData)    + "\\VRChatAdvancedLauncher";
-	m_pAppData_VRChat = Utils::File::GetAppDataPath(FOLDERID_LocalAppDataLow) + "\\VRChat\\VRChat";
+	m_pAppData_Config = Utils::File::GetAppDataPath(FOLDERID_LocalAppData) + ConfigPath;
+	m_pAppData_VRChat = Utils::File::GetAppDataPath(FOLDERID_LocalAppDataLow) + VRC_LogPath;
 
 	// ドライブのルートの文字列が含まれていなかったら
 	if (m_pAppData_Config.find(":\\") == std::string::npos || m_pAppData_VRChat.find(":\\") == std::string::npos) {
@@ -32,12 +35,14 @@ bool AdvancedLauncher::Init()
 	if (!Utils::File::IsExistsDirectory(m_pVRChatInstallPath) || !Utils::File::DoesFileExistInDirectory(m_pVRChatInstallPath, "VRChat.exe"))
 	{
 		// VRChat自体のインストール先を取得
-		m_pVRChatInstallPath = GetVRChatInstallPath();
+		m_pVRChatInstallPath = FindVRChatInstallationPath();
 
-		if (m_pVRChatInstallPath.size() == 0)
+		if (m_pVRChatInstallPath.size() == 0) {
 			MessageBox(nullptr, "VRChatのインストール先が見つかりませんでした。起動後に手動で指定してください。", "ERROR", MB_TOPMOST | MB_OK | MB_ICONERROR);
-		else 
+		}	
+		else {
 			cfg.WriteInstallPath(m_pAppData_Config, m_pVRChatInstallPath); // jsonに保存
+		}
 	}
 
 	// モニターの数を取得
@@ -58,19 +63,16 @@ void AdvancedLauncher::ProcessThread()
 
 	while (!Utils::Process::IsProcessRunning("VRChat.exe"))
 		std::this_thread::sleep_for(std::chrono::seconds(5));
-
-	m_processStarted = true;
 }
 
-
-std::string AdvancedLauncher::GetVRChatInstallPath()
+std::string AdvancedLauncher::FindVRChatInstallationPath()
 {
+	static std::string targetDir = "SteamLibrary";
 	std::vector<std::string> steam_dir_list;
 
 	// Steamライブラリを探す
-	for (const auto& drive_root : Utils::GetPhysicalDriveList())
+	for (const auto& drive_root : Utils::GetPhysicalDriveList()) 
 	{
-		std::string targetDir = "SteamLibrary";
 		auto result = Utils::File::FindDirectory(drive_root, targetDir);
 
 		if (result)
@@ -82,8 +84,7 @@ std::string AdvancedLauncher::GetVRChatInstallPath()
 	{
 		std::string common_path = dir + "\\steamapps\\common";
 
-		if (std::filesystem::is_directory(common_path))
-		{
+		if (std::filesystem::is_directory(common_path)) {
 			auto vrc_dir = std::filesystem::directory_iterator(common_path);
 
 			for (const auto& file : vrc_dir) {
@@ -144,37 +145,5 @@ std::string AdvancedLauncher::BuildCommand()
 
 	vOut << "\"";
 
-	std::cout << vOut.str() << std::endl;
-
 	return vOut.str();
-}
-
-std::string AdvancedLauncher::GetLatestVRChatLogFile()
-{
-	std::string latest_file;
-	std::time_t latest_time = 0;
-	std::regex log_pattern(R"(output_log_\d{4}-\d{2}-\d{2}_\d{2}-\d{2}-\d{2}\.txt)");
-
-	for (const auto& entry : std::filesystem::directory_iterator(m_pAppData_VRChat))
-	{
-		if (entry.is_regular_file())
-		{
-			std::string file_name = entry.path().filename().string();
-
-			if (std::regex_match(file_name, log_pattern))
-			{
-				std::tm tm = {};
-				std::istringstream ss(file_name.substr(11, 19));
-				ss >> std::get_time(&tm, "%Y-%m-%d_%H-%M-%S");
-				std::time_t fileTime = std::mktime(&tm);
-
-				if (fileTime > latest_time) {
-					latest_time = fileTime;
-					latest_file = entry.path().string();
-				}
-			}
-		}
-	}
-
-	return latest_file;
 }

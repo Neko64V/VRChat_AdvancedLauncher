@@ -45,13 +45,13 @@ namespace Utils
 				vOut = ofn.lpstrFile;
 			}
 		}
-		void SelectDirectoryPath(std::string& vOut)
+		void SelectDirectoryPath(const char* str, std::string& vOut)
 		{
 			// Path
 			BROWSEINFO bf{};
 			char szFolderPath[MAX_PATH]{};
 
-			bf.lpszTitle = "Select a folder:";
+			bf.lpszTitle = str;
 			bf.ulFlags = BIF_RETURNONLYFSDIRS | BIF_NEWDIALOGSTYLE;
 
 			// ダイアログを表示

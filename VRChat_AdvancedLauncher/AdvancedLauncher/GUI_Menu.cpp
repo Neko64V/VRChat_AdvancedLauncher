@@ -6,7 +6,7 @@ static ImColor TitleTextCol = ImColor(0.17f, 0.67f, 0.76f, 0.65f);
 
 void AdvancedLauncher::LauncherMenu()
 {
-    static const char* profileList[] = { "Main", "Sub", "Empty" };
+    static const char* profileList[] = { "Profile 1", "Profile 2", "Profile 3" };
     static const char* coreList[] = { "3 [ Ryzen5  (3Core * 2CCX)]", "4 [ Ryzen7  (4Core * 2CCX)]", "6 [ Ryzen9  (6Core * 2CCX)]", "8 [ Ryzen9+ (8Core * 2CCX)]" };
     const char** monitorList = new const char* [m_MonitorCount];
 
@@ -28,7 +28,6 @@ void AdvancedLauncher::LauncherMenu()
     ImGui::SliderInt("Max FPS", &g.g_MaxFPS, 10, 240); // --fps=**
     ImGui::Combo("Monitor", &g.g_Monitor, monitorList, m_MonitorCount); // -monitor
 
-    ImGui::Spacing();
     ImGui::NewLine();
 
     ImGui::TextColored(TitleTextCol, "Test");
@@ -36,7 +35,7 @@ void AdvancedLauncher::LauncherMenu()
     ImGui::Checkbox("Offline", &g.g_OfflineTest);
     ImGui::Checkbox("Avater Test", &g.g_AvatarTest); // --watch-avatars
     ImGui::Checkbox("World Test", &g.g_WorldTest); // --watch-world
-    ImGui::Spacing();
+
     ImGui::NewLine();
 
     ImGui::TextColored(TitleTextCol, "Misc");
@@ -78,6 +77,44 @@ void AdvancedLauncher::MiscMenu()
     ImGui::Separator();
 
     ImGui::Checkbox("AutoRestart", &g.AutoRestarter);
+    ImGui::Text("[ Latest Disconnected ]");
+    ImGui::Text(latestRestartTime.c_str());
+
+    ImGui::Spacing();
+    ImGui::NewLine();
+
+    ImGui::TextColored(TitleTextCol, "Latest World");
+    ImGui::Separator();
+
+    ImGui::Text("[ World ID ]");
+    ImGui::Text(m_latestWorldID.c_str());
+    ImGui::Text("[ Instance ID ]");
+    ImGui::Text(m_latestInstanceID.c_str());
+    ImGui::Text("[ Instance Type ]");
+    ImGui::Text(m_latesInstanceType.c_str());
+
+    if (m_latesInstanceType.compare("Public")) {
+        ImGui::Text("[ HostUser ]");
+        ImGui::Text(m_latestWorldHostUser.c_str());
+    }
+
+    ImGui::Text("[ Region ]");
+    ImGui::Text(m_latestWorldRegion.c_str());
+
+    ImGui::NewLine();
+
+    if (ImGui::Button("Open WebPage", ImVec2(ImGui::GetContentRegionAvail().x / 2.f - 16.f, 24.f))) {
+        std::string temp_link = "https://vrchat.com/home/launch?worldId=wrld_" + m_latestWorldID + "&instanceId=" + m_latestInstanceID + "~";
+
+        if (m_latesInstanceType.compare("Public")) {
+            std::string temp_pms =  m_latesInstanceType + "(usr_" + m_latestWorldHostUser + ")~";
+            temp_link += temp_pms;
+        }
+
+        temp_link += "region(" + m_latestWorldRegion + ")";
+         
+        ShellExecute(nullptr, "open", temp_link.c_str(), NULL, NULL, SW_SHOWNORMAL);
+    }
 
     ImGui::Spacing();
     ImGui::NewLine();
@@ -91,5 +128,7 @@ void AdvancedLauncher::MiscMenu()
     ImGui::SameLine();
 
     if (ImGui::Button("X"))
-        std::thread([&]() { Utils::File::SelectDirectoryPath(m_pVRChatInstallPath); }).detach();
+        std::thread([&]() { Utils::File::SelectDirectoryPath("VRChatのインストール先を選択", m_pVRChatInstallPath); }).detach();
+
+    ImGui::SameLine();
 }

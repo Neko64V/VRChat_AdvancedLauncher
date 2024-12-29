@@ -17,7 +17,7 @@ bool AppWindow::InitWindow()
 {
     // Create application window
     ImGui_ImplWin32_EnableDpiAwareness();
-    wc = { sizeof(wc), CS_CLASSDC, WndProc, 0L, 0L, GetModuleHandle(nullptr), nullptr, nullptr, nullptr, L"Launcher", L"VRC_AdvancedLauncher", nullptr};
+    wc = { sizeof(wc), CS_CLASSDC, WndProc, 0L, 0L, GetModuleHandle(nullptr), nullptr, nullptr, nullptr, L"VRChat Advanced Launcher", L"Launcher", nullptr};
 
     if (FindWindowW(wc.lpszClassName, wc.lpszMenuName)) {
         MessageBox(nullptr, "既に実行中のアプリケーションが存在します。", "ERROR", MB_TOPMOST | MB_OK | MB_ICONERROR);

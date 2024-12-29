@@ -1,5 +1,7 @@
 #pragma once
 #include <fstream>
+#include <vector>
+#include <string>
 #include <Windows.h>
 #include <filesystem>
 #include <nlohmann/json.hpp>
@@ -10,7 +12,7 @@ struct Config
     // System
     bool ApplicationActive = true;
     bool AutoRestarter = false;
-   
+
     // Launcher
     bool g_DesktopMode = false;
     bool g_FullScreen  = false;

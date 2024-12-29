@@ -6,18 +6,24 @@
 class AdvancedLauncher
 {
 private:
-	int menuID;
+	// Some Data
 	int m_MonitorCount;
-	bool m_processStarted;
+	std::string latestRestartTime = "NoData";
+
+	// WorldData
+	std::string m_latestWorldID;
+	std::string m_latestInstanceID;
+	std::string m_latesInstanceType;
+	std::string m_latestWorldHostUser;
+	std::string m_latestWorldRegion;
+
 	void ProcessThread();
 	std::string BuildCommand();
-	std::string GetVRChatInstallPath();
-	std::string GetLatestVRChatLogFile();
+	std::string FindVRChatInstallationPath();
 public:
 	std::string m_pAppData_Config;
 	std::string m_pAppData_VRChat;
 	std::string m_pVRChatInstallPath;
-	std::string m_fLatestLogFile;
 
 	bool Init();
 	void RestarterFunc();
