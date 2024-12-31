@@ -21,7 +21,7 @@ void AdvancedLauncher::RestarterFunc()
 
 		if (g.AutoRestarter)
 		{
-			while (Utils::Process::IsProcessRunning("VRChat.exe"))
+			while (!Utils::Process::IsProcessRunning("VRChat.exe"))
 				std::this_thread::sleep_for(std::chrono::seconds(5));
 
 			// ログファイルが最新であるかの確認
