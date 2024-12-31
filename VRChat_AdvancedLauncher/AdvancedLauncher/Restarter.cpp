@@ -21,6 +21,9 @@ void AdvancedLauncher::RestarterFunc()
 
 		if (g.AutoRestarter)
 		{
+			while (Utils::Process::IsProcessRunning("VRChat.exe"))
+				std::this_thread::sleep_for(std::chrono::seconds(5));
+
 			// ログファイルが最新であるかの確認
 			for (const auto& entry : std::filesystem::directory_iterator(m_pAppData_VRChat))
 			{
@@ -142,7 +145,7 @@ void AdvancedLauncher::RestarterFunc()
 							if (matches.size() > 0)
 								RestartCmd = " \"vrchat://launch?id=wrld_" + matches[1].str() + ":" + matches[2].str() + "~region(" + matches[3].str() + ")\"";
 
-							// GUI用のやつを初期化
+							// GUI用のやつ
 							worldId = matches[1].str();
 							instanceID = matches[2].str();
 							worldRegion = matches[3].str();
@@ -154,7 +157,7 @@ void AdvancedLauncher::RestarterFunc()
 							if (matches.size() > 0)
 								RestartCmd = " \"vrchat://launch?id=wrld_" + matches[1].str() + ":" + matches[2].str() + "~" + matches[3].str() + "(usr_" + matches[4].str() + ")" + "~region(" + matches[5].str() + ")\"";
 						
-							// GUI用のやつを初期化
+							// GUI用のやつ
 							worldId = matches[1].str();
 							instanceID = matches[2].str();
 							instanceType = matches[3].str();
