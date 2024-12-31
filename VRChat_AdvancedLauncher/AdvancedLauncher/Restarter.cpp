@@ -6,7 +6,6 @@
 void AdvancedLauncher::RestarterFunc()
 {
 	// データ保存用
-	std::string RestartCmd;
 	std::string latestFileName;
 	std::filesystem::file_time_type latestWriteTime;
 
@@ -74,7 +73,7 @@ void AdvancedLauncher::RestarterFunc()
 						vTime << t_hour + ":";
 						vTime << t_min + ":";
 						vTime << t_sec;
-						latestRestartTime = vTime.str();
+						m_latestRestartTime = vTime.str();
 					}
 
 					// VRChatが実行中？
@@ -85,7 +84,7 @@ void AdvancedLauncher::RestarterFunc()
 					std::this_thread::sleep_for(std::chrono::seconds(5));
 
 					// プロセスの再起動
-					std::string start_full_cmd = m_pVRChatInstallPath + "\\launch.exe" + RestartCmd;
+					std::string start_full_cmd = m_pVRChatInstallPath + "\\launch.exe" + m_restartCmd;
 					Utils::Process::StartProcess(start_full_cmd);
 
 					// 最新のログファイルが生成されるまで待機
@@ -128,6 +127,9 @@ void AdvancedLauncher::RestarterFunc()
 				{
 					try
 					{
+						m_restartCmd = " \"vrchat://launch?id=wrld_" + line + "\"";
+
+						/*
 						/*
 						[+] 起動コマンド
 						Public:
@@ -135,7 +137,6 @@ void AdvancedLauncher::RestarterFunc()
 
 						Private:
 						launch.exe "vrchat://launch?id=wrld_4432ea9b-729c-46e3-8eaf-846aa0a37fdd~private(usr_ab1234cd-123f-abc0-1234-0123456HIJK)~region(jp)
-						*/
 
 						std::smatch matches;
 
@@ -143,7 +144,7 @@ void AdvancedLauncher::RestarterFunc()
 						{
 							// Public
 							if (matches.size() > 0)
-								RestartCmd = " \"vrchat://launch?id=wrld_" + matches[1].str() + ":" + matches[2].str() + "~region(" + matches[3].str() + ")\"";
+								m_restartCmd = " \"vrchat://launch?id=wrld_" + matches[1].str() + ":" + matches[2].str() + "~region(" + matches[3].str() + ")\"";
 
 							// GUI用のやつ
 							worldId = matches[1].str();
@@ -155,7 +156,7 @@ void AdvancedLauncher::RestarterFunc()
 						{
 							// !(Public)
 							if (matches.size() > 0)
-								RestartCmd = " \"vrchat://launch?id=wrld_" + matches[1].str() + ":" + matches[2].str() + "~" + matches[3].str() + "(usr_" + matches[4].str() + ")" + "~region(" + matches[5].str() + ")\"";
+								m_restartCmd = " \"vrchat://launch?id=wrld_" + matches[1].str() + ":" + matches[2].str() + "~" + matches[3].str() + "(usr_" + matches[4].str() + ")" + "~region(" + matches[5].str() + ")\"";
 						
 							// GUI用のやつ
 							worldId = matches[1].str();
@@ -164,6 +165,15 @@ void AdvancedLauncher::RestarterFunc()
 							worldHost = matches[4].str();
 							worldRegion = matches[5].str();
 						}
+						else // グループ
+						{
+							// https://vrchat.com/home/launch?worldId=wrld_2eb69983-95e5-4e43-a7d3-9b4033ea5b62&instanceId=85998~group(grp_1a78d42c-eae6-4ca6-b87e-5191243161ae)~groupAccessType(public)~region(jp)
+							if (std::regex_search(line, matches, std::regex("wrld_([a-fA-F0-9\\-a-z]+):([0-9]+)~([a-fA-F\\-a-z]+)\\(grp_([a-fA-F0-9\\-]+)\\)~groupAccessType\\(([^)]+)~region\\(([^)]+)\\)")))
+							{
+
+							}
+						}
+						*/
 					}
 					catch (const std::exception& e)
 					{

@@ -78,7 +78,7 @@ void AdvancedLauncher::MiscMenu()
 
     ImGui::Checkbox("AutoRestart", &g.AutoRestarter);
     ImGui::Text("[ Latest Disconnected ]");
-    ImGui::Text(latestRestartTime.c_str());
+    ImGui::Text(m_latestRestartTime.c_str());
 
     ImGui::Spacing();
     ImGui::NewLine();
@@ -106,7 +106,8 @@ void AdvancedLauncher::MiscMenu()
     // Launch
     if (ImGui::Button("Launch", ImVec2(ImGui::GetContentRegionAvail().x / 2.f - 8.f, 24.f))) {
 
-        std::string run_cmd = m_pVRChatInstallPath + "\\" + BuildCommand();
+        //std::string run_cmd = m_pVRChatInstallPath + "\\" + BuildCommand();
+        std::string run_cmd = m_pVRChatInstallPath + "\\launch.exe" + m_restartCmd;
 
         if (Utils::Process::IsProcessRunning("VRChat.exe"))
         {

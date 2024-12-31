@@ -8,7 +8,8 @@ class AdvancedLauncher
 private:
 	// Some Data
 	int m_MonitorCount;
-	std::string latestRestartTime = "NoData";
+	std::string m_restartCmd;
+	std::string m_latestRestartTime = "NoData";
 
 	// WorldData
 	std::string m_latestWorldID;
