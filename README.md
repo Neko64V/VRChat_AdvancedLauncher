@@ -7,13 +7,14 @@ VRChatの起動オプションをGUIベースで変更可能にしたちょっ�
 2. VRChatAdvancedLauncher.exeを実行
 
 ## Restarter
-* VRChatのTimeoutを検出したら自動で元居たワールドに戻ります。
+### 概要
+VRChatのTimeoutを検出したら自動で元居たワールドに戻ります。  
+が、今のところSteamVRのみにしか対応していません。VirtualDesktopとかは無理です。  
+Quest3S買ったのでそのうち対応できたら良いなって思ってます。
+
+#### 注意
 * 複数のクライアントが起動中の場合、最後に起動されたクライアントを監視します。
 * ここで起動されるのは、起動オプション無しのVRChatのクライアントです。
-
-## config.json
-AppData\Local\VRChatAdvancedLauncher 内にあります。  
-VRChatのインストール先やLauncherの設定が保存されており、自動でセーブ/ロードされます。
 
 ## 機能について
 GUIメニューの各機能について軽く説明します。

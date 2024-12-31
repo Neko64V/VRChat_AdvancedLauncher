@@ -103,7 +103,27 @@ void AdvancedLauncher::MiscMenu()
 
     ImGui::NewLine();
 
-    if (ImGui::Button("Open WebPage", ImVec2(ImGui::GetContentRegionAvail().x / 2.f - 16.f, 24.f))) {
+    // Launch
+    if (ImGui::Button("Launch", ImVec2(ImGui::GetContentRegionAvail().x / 2.f - 8.f, 24.f))) {
+
+        std::string run_cmd = m_pVRChatInstallPath + "\\" + BuildCommand();
+
+        if (Utils::Process::IsProcessRunning("VRChat.exe"))
+        {
+            int result = MessageBox(NULL, "既に他のVRChatインスタンスが存在します。\n本当に実行しますか？", "確認", MB_YESNO | MB_TOPMOST | MB_ICONWARNING);
+
+            if (result == IDYES)
+                Utils::Process::StartProcess(run_cmd);
+        }
+        else {
+            Utils::Process::StartProcess(run_cmd);
+        }
+    }
+
+    ImGui::SameLine();
+
+    // Open with Web
+    if (ImGui::Button("Open WebPage", ImVec2(ImGui::GetContentRegionAvail().x, 24.f))) {
         std::string temp_link = "https://vrchat.com/home/launch?worldId=wrld_" + m_latestWorldID + "&instanceId=" + m_latestInstanceID + "~";
 
         if (m_latesInstanceType.compare("Public")) {

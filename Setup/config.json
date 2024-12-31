@@ -1,13 +1,14 @@
 {
-    "AvatarTest": false,
-    "CCXEnable": false,
-    "CCXOption": false,
-    "DesktopMode": false,
-    "FullScreen": false,
-    "MaxFPS": 144,
-    "MaxFPSEnable": true,
-    "OffliteTest": false,
-    "ProfileID": 0,
-    "VRChatPath": "",
-    "WorldTest": false
+  "AutoRestarter": false,
+  "AvatarTest": false,
+  "CCXEnable": false,
+  "CCXOption": false,
+  "DesktopMode": false,
+  "FullScreen": false,
+  "MaxFPS": 144,
+  "MaxFPSEnable": true,
+  "OffliteTest": false,
+  "ProfileID": 0,
+  "VRChatPath": "",
+  "WorldTest": false
 }

@@ -12,6 +12,13 @@ void AdvancedLauncher::RestarterFunc()
 
 	while (true)
 	{
+		// 仮
+		std::string worldId = std::string();
+		std::string instanceID = std::string();
+		std::string instanceType = std::string();
+		std::string worldHost = std::string();
+		std::string worldRegion = std::string();
+
 		if (g.AutoRestarter)
 		{
 			// ログファイルが最新であるかの確認
@@ -136,16 +143,10 @@ void AdvancedLauncher::RestarterFunc()
 								RestartCmd = " \"vrchat://launch?id=wrld_" + matches[1].str() + ":" + matches[2].str() + "~region(" + matches[3].str() + ")\"";
 
 							// GUI用のやつを初期化
-							m_latestWorldID = std::string();
-							m_latestInstanceID = std::string();
-							m_latesInstanceType = std::string();
-							m_latestWorldHostUser = std::string();
-							m_latestWorldRegion = std::string();
-
-							m_latestWorldID = matches[1].str();
-							m_latestInstanceID = matches[2].str();
-							m_latestWorldRegion = matches[3].str();
-							m_latesInstanceType = "Public";
+							worldId = matches[1].str();
+							instanceID = matches[2].str();
+							worldRegion = matches[3].str();
+							instanceType = "Public";
 						}
 						else if (std::regex_search(line, matches, std::regex("wrld_([a-fA-F0-9\\-a-z]+):([0-9]+)~([a-fA-F\\-a-z]+)\\(usr_([a-fA-F0-9\\-]+)\\)~region\\(([^)]+)\\)"))) 
 						{
@@ -154,17 +155,11 @@ void AdvancedLauncher::RestarterFunc()
 								RestartCmd = " \"vrchat://launch?id=wrld_" + matches[1].str() + ":" + matches[2].str() + "~" + matches[3].str() + "(usr_" + matches[4].str() + ")" + "~region(" + matches[5].str() + ")\"";
 						
 							// GUI用のやつを初期化
-							m_latestWorldID = std::string();
-							m_latestInstanceID = std::string();
-							m_latesInstanceType = std::string();
-							m_latestWorldHostUser = std::string();
-							m_latestWorldRegion = std::string();
-
-							m_latestWorldID = matches[1].str();
-							m_latestInstanceID = matches[2].str();
-							m_latesInstanceType = matches[3].str();
-							m_latestWorldHostUser = matches[4].str();
-							m_latestWorldRegion = matches[5].str();
+							worldId = matches[1].str();
+							instanceID = matches[2].str();
+							instanceType = matches[3].str();
+							worldHost = matches[4].str();
+							worldRegion = matches[5].str();
 						}
 					}
 					catch (const std::exception& e)
@@ -176,6 +171,13 @@ void AdvancedLauncher::RestarterFunc()
 
 			file.close();
 		}
+
+		// 仮
+		m_latestWorldID = worldId;
+		m_latestInstanceID = instanceID;
+		m_latesInstanceType = instanceType;
+		m_latestWorldHostUser = worldHost;
+		m_latestWorldRegion = worldRegion;
 
 		std::this_thread::sleep_for(std::chrono::seconds(10));
 	}
