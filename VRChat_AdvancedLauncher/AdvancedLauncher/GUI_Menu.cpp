@@ -95,6 +95,8 @@ void AdvancedLauncher::MiscMenu()
     {
         std::string run_cmd = m_pVRChatInstallPath + "\\launch.exe" + m_restartCmd;
 
+        std::cout << run_cmd << std::endl;
+
         if (Utils::Process::IsProcessRunning("VRChat.exe"))
         {
             int result = MessageBox(NULL, "既に他のVRChatインスタンスが存在します。\n本当に実行しますか？", "確認", MB_YESNO | MB_TOPMOST | MB_ICONWARNING);

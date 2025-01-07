@@ -11,14 +11,8 @@ private:
 	int m_MonitorCount;
 	std::string m_restartCmd;
 	std::string m_latestWorldName;
-	std::string m_latestRestartTime = "No Data";
-
-	// WorldData
-	std::string m_latestWorldID;
-	std::string m_latestInstanceID;
-	std::string m_latesInstanceType;
-	std::string m_latestWorldHostUser;
-	std::string m_latestWorldRegion;
+	std::string m_latestRestartTime;
+	std::string m_ConfigFileName = "config.json";
 
 	void ProcessThread();
 	std::string BuildCommand();

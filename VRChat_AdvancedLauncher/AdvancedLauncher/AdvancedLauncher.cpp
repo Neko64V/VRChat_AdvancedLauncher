@@ -17,8 +17,8 @@ bool AdvancedLauncher::Init()
 	io.Fonts->Build();
 
 	// AppData\Local(Low)からのパス
-	static std::string ConfigPath	= "\\VRChatAdvancedLauncher";
-	static std::string VRC_LogPath	= "\\VRChat\\VRChat";
+	static std::string ConfigPath	= "\\VRChatAdvancedLauncher\\";
+	static std::string VRC_LogPath	= "\\VRChat\\VRChat\\";
 
 	// 各種Pathを取得
 	m_pAppData_Config = Utils::File::GetAppDataPath(FOLDERID_LocalAppData) + ConfigPath;
@@ -47,7 +47,8 @@ bool AdvancedLauncher::Init()
 			MessageBox(nullptr, "VRChatのインストール先が見つかりませんでした。起動後に手動で指定してください。", "ERROR", MB_TOPMOST | MB_OK | MB_ICONERROR);
 		}	
 		else {
-			cfg.WriteInstallPath(m_pAppData_Config, m_pVRChatInstallPath); // jsonに保存
+			// jsonに保存
+			cfg.WriteInstallPath(m_pAppData_Config, m_pVRChatInstallPath);
 		}
 	}
 
@@ -55,20 +56,20 @@ bool AdvancedLauncher::Init()
 	EnumDisplayMonitors(NULL, NULL, MonitorEnumProc, reinterpret_cast<LPARAM>(&m_MonitorCount));
 
 	// config.jsonから設定をロード
-	cfg.LoadSetting(m_pAppData_Config, "config.json");
+	cfg.LoadSetting(m_pAppData_Config, m_ConfigFileName);
 
 	return true;
 }
 
 void AdvancedLauncher::ProcessThread()
 {
-	cfg.SaveSetting(m_pAppData_Config, "config.json");
+	cfg.SaveSetting(m_pAppData_Config, m_ConfigFileName);
 
 	std::string run_cmd = m_pVRChatInstallPath + "\\" + BuildCommand();
 	Utils::Process::StartProcess(run_cmd);
 
-	while (!Utils::Process::IsProcessRunning("VRChat.exe"))
-		std::this_thread::sleep_for(std::chrono::seconds(5));
+	//while (!Utils::Process::IsProcessRunning("VRChat.exe"))
+		//std::this_thread::sleep_for(std::chrono::seconds(5));
 }
 
 std::string AdvancedLauncher::FindVRChatInstallationPath()
