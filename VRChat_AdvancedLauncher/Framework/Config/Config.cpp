@@ -9,7 +9,7 @@ void ConfigManager::LoadSetting(const std::string path, const std::string filena
     if (filename.empty())
         return;
 
-    std::string p = path + "\\" + filename;
+    std::string p = path + filename;
     std::ifstream file(p);
     json JSON;
     file >> JSON;
@@ -35,7 +35,7 @@ void ConfigManager::SaveSetting(const std::string path, const std::string filena
     if (filename.empty())
         return;
 
-    std::string configPath = path + "\\" + filename;
+    std::string configPath = path + filename;
     std::ifstream file(configPath);
 
     if (file.good()) {
