@@ -1,5 +1,6 @@
 #include "AdvancedLauncher.h"
 #include "../Utils/Utils.h"
+#include "../Framework/ImGui/Font/NotoSansMed.h"
 
 BOOL CALLBACK MonitorEnumProc(HMONITOR hMonitor, HDC hdcMonitor, LPRECT lprcMonitor, LPARAM dwData) {
 	int* count = reinterpret_cast<int*>(dwData);
@@ -9,6 +10,12 @@ BOOL CALLBACK MonitorEnumProc(HMONITOR hMonitor, HDC hdcMonitor, LPRECT lprcMoni
 
 bool AdvancedLauncher::Init()
 {
+	// Load ImGui fonts
+	ImGuiIO& io = ImGui::GetIO(); (void)io;
+	io.Fonts->AddFontDefault();
+	font = io.Fonts->AddFontFromMemoryCompressedTTF(NotoSansMed_compressed_data, NotoSansMed_compressed_size, 16.f, NULL, io.Fonts->GetGlyphRangesJapanese());
+	io.Fonts->Build();
+
 	// AppData\Local(Low)からのパス
 	static std::string ConfigPath	= "\\VRChatAdvancedLauncher";
 	static std::string VRC_LogPath	= "\\VRChat\\VRChat";
@@ -19,7 +26,6 @@ bool AdvancedLauncher::Init()
 
 	// ドライブのルートの文字列が含まれていなかったら
 	if (m_pAppData_Config.find(":\\") == std::string::npos || m_pAppData_VRChat.find(":\\") == std::string::npos) {
-		// ToDo: Log or Message
 		return false;
 	}
 	else if (!Utils::File::IsExistsDirectory(m_pAppData_Config)) {

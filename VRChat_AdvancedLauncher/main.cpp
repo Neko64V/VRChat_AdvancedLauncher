@@ -9,6 +9,9 @@ int main()
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 #endif
 {
+    // テスト用 - 文字化け対策
+    SetConsoleOutputCP(CP_UTF8);
+
     AppWindow* wnd = new AppWindow();
 
     if (!wnd->InitWindow())

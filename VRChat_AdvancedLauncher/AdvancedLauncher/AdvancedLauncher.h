@@ -7,9 +7,11 @@ class AdvancedLauncher
 {
 private:
 	// Some Data
+	ImFont* font;
 	int m_MonitorCount;
 	std::string m_restartCmd;
-	std::string m_latestRestartTime = "NoData";
+	std::string m_latestWorldName;
+	std::string m_latestRestartTime = "No Data";
 
 	// WorldData
 	std::string m_latestWorldID;

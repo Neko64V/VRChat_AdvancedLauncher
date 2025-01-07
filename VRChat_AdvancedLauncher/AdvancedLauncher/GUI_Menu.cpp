@@ -77,67 +77,37 @@ void AdvancedLauncher::MiscMenu()
     ImGui::Separator();
 
     ImGui::Checkbox("AutoRestart", &g.AutoRestarter);
-    ImGui::Text("[ Latest Disconnected ]");
+
+    ImGui::BulletText("Timeout");
     ImGui::Text(m_latestRestartTime.c_str());
 
     ImGui::Spacing();
-    ImGui::NewLine();
 
-    ImGui::TextColored(TitleTextCol, "Latest World");
-    ImGui::Separator();
-
-    ImGui::Text("[ World ID ]");
-    ImGui::Text(m_latestWorldID.c_str());
-    ImGui::Text("[ Instance ID ]");
-    ImGui::Text(m_latestInstanceID.c_str());
-    ImGui::Text("[ Instance Type ]");
-    ImGui::Text(m_latesInstanceType.c_str());
-
-    if (m_latesInstanceType.compare("Public")) {
-        ImGui::Text("[ HostUser ]");
-        ImGui::Text(m_latestWorldHostUser.c_str());
-    }
-
-    ImGui::Text("[ Region ]");
-    ImGui::Text(m_latestWorldRegion.c_str());
+    ImGui::BulletText("World");
+    ImGui::PushFont(font);
+    ImGui::Text(m_latestWorldName.c_str());
+    ImGui::PopFont();
 
     ImGui::NewLine();
 
     // Launch
-    if (ImGui::Button("Launch", ImVec2(ImGui::GetContentRegionAvail().x / 2.f - 8.f, 24.f))) {
-
-        //std::string run_cmd = m_pVRChatInstallPath + "\\" + BuildCommand();
+    if (ImGui::Button("Launch", ImVec2(ImGui::GetContentRegionAvail().x / 2.f - 8.f, 24.f))) 
+    {
         std::string run_cmd = m_pVRChatInstallPath + "\\launch.exe" + m_restartCmd;
 
         if (Utils::Process::IsProcessRunning("VRChat.exe"))
         {
             int result = MessageBox(NULL, "既に他のVRChatインスタンスが存在します。\n本当に実行しますか？", "確認", MB_YESNO | MB_TOPMOST | MB_ICONWARNING);
 
-            if (result == IDYES)
+            if (result == IDYES) {
                 Utils::Process::StartProcess(run_cmd);
+            }
         }
         else {
             Utils::Process::StartProcess(run_cmd);
         }
     }
 
-    ImGui::SameLine();
-
-    // Open with Web
-    if (ImGui::Button("Open WebPage", ImVec2(ImGui::GetContentRegionAvail().x, 24.f))) {
-        std::string temp_link = "https://vrchat.com/home/launch?worldId=wrld_" + m_latestWorldID + "&instanceId=" + m_latestInstanceID + "~";
-
-        if (m_latesInstanceType.compare("Public")) {
-            std::string temp_pms =  m_latesInstanceType + "(usr_" + m_latestWorldHostUser + ")~";
-            temp_link += temp_pms;
-        }
-
-        temp_link += "region(" + m_latestWorldRegion + ")";
-         
-        ShellExecute(nullptr, "open", temp_link.c_str(), NULL, NULL, SW_SHOWNORMAL);
-    }
-
-    ImGui::Spacing();
     ImGui::NewLine();
     
     ImGui::TextColored(TitleTextCol, "Path");

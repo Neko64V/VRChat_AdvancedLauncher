@@ -47,8 +47,12 @@ void AdvancedLauncher::RestarterFunc()
 			// ログファイルを1行づつ読み取り、対象の文字列を探す
 			while (std::getline(file, line))
 			{
+				// 空行はスキップ
+				if (line.empty())
+					continue;
+
 				// タイムアウト
-				if (line.find("[Behaviour] Timeout:") != std::string::npos)
+				if (line.find("[Behaviour] Timeout") != std::string::npos)
 				{
 					std::cout << "[-] Timeout Detected!" << std::endl;
 
@@ -122,14 +126,11 @@ void AdvancedLauncher::RestarterFunc()
 					break;
 				}
 
-				// 最新のワールドとインスタンスを記録
+				// Instance
 				if (line.find("[Behaviour] Joining") != std::string::npos && line.find("wrld_") != std::string::npos)
 				{
 					try
 					{
-						m_restartCmd = " \"vrchat://launch?id=wrld_" + line + "\"";
-
-						/*
 						/*
 						[+] 起動コマンド
 						Public:
@@ -138,42 +139,32 @@ void AdvancedLauncher::RestarterFunc()
 						Private:
 						launch.exe "vrchat://launch?id=wrld_4432ea9b-729c-46e3-8eaf-846aa0a37fdd~private(usr_ab1234cd-123f-abc0-1234-0123456HIJK)~region(jp)
 
+						Group:
+						launch.exe "worldId=wrld_2eb69983-95e5-4e43-a7d3-9b4033ea5b62&instanceId=85998~group(grp_1a78d42c-eae6-4ca6-b87e-5191243161ae)~groupAccessType(public)~region(jp)"
+						*/
+
 						std::smatch matches;
 
-						if (std::regex_search(line, matches, std::regex("wrld_([a-fA-F0-9\\-]+):([0-9]+)~region\\(([^)]+)\\)"))) 
-						{
-							// Public
-							if (matches.size() > 0)
-								m_restartCmd = " \"vrchat://launch?id=wrld_" + matches[1].str() + ":" + matches[2].str() + "~region(" + matches[3].str() + ")\"";
+						if (std::regex_search(line, matches, std::regex("wrld_(.+)"))) {
+							m_restartCmd = " \"vrchat://launch?id=" + matches[0].str() + "\"";
+						}
+					}
+					catch (const std::exception& e)
+					{
+						std::cerr << "Regex error: " << e.what() << std::endl;
+					}
+				}
 
-							// GUI用のやつ
-							worldId = matches[1].str();
-							instanceID = matches[2].str();
-							worldRegion = matches[3].str();
-							instanceType = "Public";
-						}
-						else if (std::regex_search(line, matches, std::regex("wrld_([a-fA-F0-9\\-a-z]+):([0-9]+)~([a-fA-F\\-a-z]+)\\(usr_([a-fA-F0-9\\-]+)\\)~region\\(([^)]+)\\)"))) 
-						{
-							// !(Public)
-							if (matches.size() > 0)
-								m_restartCmd = " \"vrchat://launch?id=wrld_" + matches[1].str() + ":" + matches[2].str() + "~" + matches[3].str() + "(usr_" + matches[4].str() + ")" + "~region(" + matches[5].str() + ")\"";
-						
-							// GUI用のやつ
-							worldId = matches[1].str();
-							instanceID = matches[2].str();
-							instanceType = matches[3].str();
-							worldHost = matches[4].str();
-							worldRegion = matches[5].str();
-						}
-						else // グループ
-						{
-							// https://vrchat.com/home/launch?worldId=wrld_2eb69983-95e5-4e43-a7d3-9b4033ea5b62&instanceId=85998~group(grp_1a78d42c-eae6-4ca6-b87e-5191243161ae)~groupAccessType(public)~region(jp)
-							if (std::regex_search(line, matches, std::regex("wrld_([a-fA-F0-9\\-a-z]+):([0-9]+)~([a-fA-F\\-a-z]+)\\(grp_([a-fA-F0-9\\-]+)\\)~groupAccessType\\(([^)]+)~region\\(([^)]+)\\)")))
-							{
+				// WorldName
+				if (line.find("[Behaviour] Joining or Creating") != std::string::npos)
+				{
+					std::smatch matches;
 
-							}
-						}
-						*/
+					try
+					{
+						if (std::regex_search(line, matches, std::regex(R"(Joining or Creating Room: (.+))"))) {
+							m_latestWorldName = matches[1].str();
+						}	
 					}
 					catch (const std::exception& e)
 					{
