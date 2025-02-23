@@ -1,7 +1,7 @@
 ## 概要
 VRChatの起動オプションをGUIベースで変更可能にしたちょっと便利なランチャー。  
 いちいちSteamやショートカットを編集しなくても簡単に起動構成がいじれるのでいろいろ捗ります。
-![image](https://github.com/user-attachments/assets/a9959b92-e88d-43b5-a6fa-3213ce16cf4c)
+![image](Image.png)
 
 ## 機能について
 GUIメニューの各機能について軽く説明します。
