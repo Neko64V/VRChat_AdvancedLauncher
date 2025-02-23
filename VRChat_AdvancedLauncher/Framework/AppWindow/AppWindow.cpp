@@ -1,4 +1,5 @@
 #include "AppWindow.h"
+#include "../../resource.h"
 
 ID3D11Device* g_pd3dDevice = nullptr;
 ID3D11DeviceContext* g_pd3dDeviceContext = nullptr;
@@ -18,6 +19,8 @@ bool AppWindow::InitWindow()
     // Create application window
     ImGui_ImplWin32_EnableDpiAwareness();
     wc = { sizeof(wc), CS_CLASSDC, WndProc, 0L, 0L, GetModuleHandle(nullptr), nullptr, nullptr, nullptr, L"VRChat Advanced Launcher", L"Launcher", nullptr};
+
+    wc.hIcon = (HICON)LoadImage(wc.hInstance, MAKEINTRESOURCE(IDI_ICON1), IMAGE_ICON, GetSystemMetrics(SM_CXICON), GetSystemMetrics(SM_CYICON), 0);
 
     if (FindWindowW(wc.lpszClassName, wc.lpszMenuName)) {
         MessageBox(nullptr, "既に実行中のアプリケーションが存在します。", "ERROR", MB_TOPMOST | MB_OK | MB_ICONERROR);
