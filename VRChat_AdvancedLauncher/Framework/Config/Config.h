@@ -10,13 +10,13 @@ using json = nlohmann::json;
 struct Config
 {
     // System
-    bool ApplicationActive = true;
-    bool AutoRestarter = false;
+    bool m_ApplicationActive = true;
 
     // Launcher
     bool g_DesktopMode = false;
     bool g_FullScreen  = false;
     bool g_MaxFPSEnable = true;
+    int  g_WindowSize = 0;
     int  g_MaxFPS = 144;
     int  g_Monitor = 0;
     bool g_OfflineTest = false;
@@ -33,8 +33,8 @@ class ConfigManager
 public:
     void LoadSetting(const std::string path, const std::string filename);
     void SaveSetting(const std::string path, const std::string filename);
-    std::string ReadInstallPath(const std::string& appdata_local);
-    void WriteInstallPath(const std::string& appdata_local, const std::string& vrc_path);
+    std::string ReadInstallPath(const std::string& appdata_local, const std::string& config_name);
+    void WriteInstallPath(const std::string& appdata_local, const std::string& config_name, const std::string& vrc_path);
 };
 
 extern Config g;

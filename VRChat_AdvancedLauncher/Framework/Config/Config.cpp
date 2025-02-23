@@ -6,15 +6,11 @@ ConfigManager cfg;
 
 void ConfigManager::LoadSetting(const std::string path, const std::string filename)
 {
-    if (filename.empty())
-        return;
-
-    std::string p = path + filename;
-    std::ifstream file(p);
+    std::string configPath = path + filename;
+    std::ifstream file(configPath);
     json JSON;
     file >> JSON;
 
-    g.AutoRestarter = JSON["AutoRestarter"];
     g.g_AvatarTest = JSON["AvatarTest"];
     g.g_CCX_Enable = JSON["CCXEnable"];
     g.g_CCX_Option = JSON["CCXOption"];
@@ -26,15 +22,13 @@ void ConfigManager::LoadSetting(const std::string path, const std::string filena
     g.g_OfflineTest = JSON["OffliteTest"];
     g.g_ProfileID = JSON["ProfileID"];
     g.g_WorldTest = JSON["WorldTest"];
+    g.g_WindowSize = JSON["WindowSize"];
 
     file.close();
 }
 
 void ConfigManager::SaveSetting(const std::string path, const std::string filename)
 {
-    if (filename.empty())
-        return;
-
     std::string configPath = path + filename;
     std::ifstream file(configPath);
 
@@ -42,7 +36,6 @@ void ConfigManager::SaveSetting(const std::string path, const std::string filena
         json JSON;
         file >> JSON;
 
-        JSON["AutoRestarter"] = g.AutoRestarter;
         JSON["AvatarTest"] = g.g_AvatarTest;
         JSON["CCXEnable"] = g.g_CCX_Enable;
         JSON["CCXOption"] = g.g_CCX_Option;
@@ -54,29 +47,25 @@ void ConfigManager::SaveSetting(const std::string path, const std::string filena
         JSON["OffliteTest"] = g.g_OfflineTest;
         JSON["ProfileID"] = g.g_ProfileID;
         JSON["WorldTest"] = g.g_WorldTest;
+        JSON["WindowSize"] = g.g_WindowSize;
 
         std::ofstream outputFile(configPath, std::ios::trunc);
+
         if (outputFile.good()) {
             outputFile << JSON.dump(4);
-            std::cout << "[ dev ] jsonをアップデート" << std::endl;
+            std::cout << "[ LOG ] json updated - ConfigManager::SaveSetting()" << std::endl;
         }
         else {
-            std::cerr << "[ dev ] jsonのアップデートに失敗" << std::endl;
+            std::cerr << "[ LOG ] failed to update json - ConfigManager::SaveSetting()" << std::endl;
         }
     }
 
     file.close();
 }
 
-std::string ConfigManager::ReadInstallPath(const std::string& appdata_local)
+std::string ConfigManager::ReadInstallPath(const std::string& appdata_local, const std::string& config_name)
 {
-    std::string configPath = appdata_local;
-    std::string configFile = configPath + "\\config.json";
-
-    if (!Utils::File::IsExistsDirectory(configPath)) {
-        MessageBox(nullptr, "setup.batを実行しましたか？", "ERROR", MB_TOPMOST | MB_OK | MB_ICONERROR);
-        return std::string();
-    }
+    std::string configFile = appdata_local + config_name;
 
     std::ifstream f(configFile);
 
@@ -94,14 +83,9 @@ std::string ConfigManager::ReadInstallPath(const std::string& appdata_local)
     }
 }
 
-void ConfigManager::WriteInstallPath(const std::string& appdata_local, const std::string& vrc_path)
+void ConfigManager::WriteInstallPath(const std::string& appdata_local, const std::string& config_name, const std::string& vrc_path)
 {
-    std::string path = appdata_local + "\\config.json";
-
-    if (!Utils::File::IsExistsFile(path)) {
-        MessageBox(nullptr, "setup.batを実行しましたか？", "ERROR", MB_TOPMOST | MB_OK | MB_ICONERROR);
-        return;
-    }
+    std::string path = appdata_local + config_name;
 
     std::ifstream f(path);
 
@@ -114,10 +98,10 @@ void ConfigManager::WriteInstallPath(const std::string& appdata_local, const std
         std::ofstream outputFile(path, std::ios::trunc);
         if (outputFile.good()) {
             outputFile << j.dump(4);
-            std::cout << "[ dev ] jsonをアップデート" << std::endl;
+            std::cerr << "[ dev ] json updated - ConfigManager::WriteInstallPath()" << std::endl;
         }
         else {
-            std::cerr << "[ dev ] jsonのアップデートに失敗" << std::endl;
+            std::cerr << "[ dev ] failed to update json - ConfigManager::WriteInstallPath()" << std::endl;
         }
     }
 

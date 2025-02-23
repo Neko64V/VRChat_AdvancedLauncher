@@ -1,8 +1,8 @@
 #include "Utils.h"
 
-namespace Utils
+namespace utils
 {
-	namespace File
+	namespace file
 	{
 		bool IsExistsFile(const std::string path)
 		{
@@ -129,7 +129,7 @@ namespace Utils
 			return std::nullopt;
 		}
 	}
-	namespace Process
+	namespace process
 	{
 		DWORD GetProcessIDByName(const std::string processName)
 		{

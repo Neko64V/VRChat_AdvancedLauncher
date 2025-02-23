@@ -12,9 +12,9 @@
 #ifndef UTILS_H
 #define UTILS_H
 
-namespace Utils
+namespace utils
 {
-	namespace File
+	namespace file
 	{
 		bool IsExistsFile(const std::string path);
 		bool IsExistsDirectory(const std::string path);
@@ -25,7 +25,7 @@ namespace Utils
 		std::vector<std::string> GetFileList(const std::string path, const std::string extension);
 		std::optional<std::string> FindDirectory(const std::string& startDir, const std::string& targetName);
 	}
-	namespace Process
+	namespace process
 	{
 		DWORD GetProcessIDByName(const std::string processName);
 		bool IsProcessRunning(const std::string processName);

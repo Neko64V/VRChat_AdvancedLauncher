@@ -151,7 +151,6 @@
   <ItemGroup>
     <ClCompile Include="AdvancedLauncher\AdvancedLauncher.cpp" />
     <ClCompile Include="AdvancedLauncher\GUI_Menu.cpp" />
-    <ClCompile Include="AdvancedLauncher\Restarter.cpp" />
     <ClCompile Include="Framework\AppWindow\AppWindow.cpp" />
     <ClCompile Include="Framework\Config\Config.cpp" />
     <ClCompile Include="Framework\ImGui\imgui.cpp" />
@@ -168,8 +167,6 @@
     <None Include="..\.gitignore" />
     <None Include="..\LICENSE" />
     <None Include="..\README.md" />
-    <None Include="..\Setup\config.json" />
-    <None Include="..\Setup\setup.bat" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

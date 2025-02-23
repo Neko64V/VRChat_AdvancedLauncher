@@ -9,18 +9,13 @@ int main()
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 #endif
 {
-    // テスト用 - 文字化け対策
-    SetConsoleOutputCP(CP_UTF8);
-
     AppWindow* wnd = new AppWindow();
 
-    if (!wnd->InitWindow())
+    if (!launcher->Init())
         return 1;
 
-    if (!launcher->Init())
+    if (!wnd->InitWindow())
         return 2;
-
-    std::thread([&]() { launcher->RestarterFunc(); }).detach();
 
     wnd->WindowLoop();
     wnd->DestroyAppWindow();
@@ -57,7 +52,7 @@ void AppWindow::WindowLoop()
     colors[ImGuiCol_HeaderHovered] = ImVec4(0.13f, 0.23f, 0.25f, 1.00f);
     colors[ImGuiCol_HeaderActive] = ImVec4(0.09f, 0.58f, 0.64f, 1.00f);
 
-    while (g.ApplicationActive)
+    while (g.m_ApplicationActive)
     {
         MSG msg;
         while (PeekMessage(&msg, nullptr, 0U, 0U, PM_REMOVE)) {
@@ -80,18 +75,10 @@ void AppWindow::WindowLoop()
         ImGuiStyle& style = ImGui::GetStyle();
 
         ImGui::SetNextWindowPos(ImVec2(0.f, 0.f));
-        ImGui::SetNextWindowSize(ImVec2(800.f - (style.WindowPadding.x * 2), 500.f - (style.WindowPadding.y * 2)));
+        ImGui::SetNextWindowSize(ImVec2(450.f - (style.WindowPadding.x * 2), 500.f - (style.WindowPadding.y * 2)));
         ImGui::Begin("VRChat - Advanced Launcher", nullptr, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize);
 
-        ImGui::BeginChild("##C1", ImVec2(ImGui::GetContentRegionAvail().x / 2.f, ImGui::GetContentRegionAvail().y));
         launcher->LauncherMenu();
-        ImGui::EndChild();
-
-        ImGui::SameLine();
-
-        ImGui::BeginChild("##C2-0", ImVec2(ImGui::GetContentRegionAvail()));
-        launcher->MiscMenu();
-        ImGui::EndChild();
 
         ImGui::End();
 

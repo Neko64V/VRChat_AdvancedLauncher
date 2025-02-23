@@ -8,68 +8,91 @@ BOOL CALLBACK MonitorEnumProc(HMONITOR hMonitor, HDC hdcMonitor, LPRECT lprcMoni
 	return TRUE;
 }
 
+json get_default_config() {
+	return json{
+		{ "AvatarTest", false },
+		{ "CCXEnable", false },
+		{ "CCXOption", 2 },
+		{ "DesktopMode", false },
+		{ "FullScreen", false },
+		{ "MaxFPS", 144 },
+		{ "MaxFPSEnable", true },
+		{ "Monitor", 0 },
+		{ "OffliteTest", false },
+		{ "ProfileID", 0 },
+		{ "VRChatPath", "" },
+		{ "WorldTest", false },
+		{ "WindowSize", 0 }
+	};
+}
+
 bool AdvancedLauncher::Init()
 {
-	// Load ImGui fonts
-	ImGuiIO& io = ImGui::GetIO(); (void)io;
-	io.Fonts->AddFontDefault();
-	font = io.Fonts->AddFontFromMemoryCompressedTTF(NotoSansMed_compressed_data, NotoSansMed_compressed_size, 16.f, NULL, io.Fonts->GetGlyphRangesJapanese());
-	io.Fonts->Build();
+	// 各種Pathを取得 (AppData)
+	m_szConfigPath = utils::file::GetAppDataPath(FOLDERID_LocalAppData) + "\\VRChatAdvancedLauncher\\";
+	m_szVRChatConfigPath = utils::file::GetAppDataPath(FOLDERID_LocalAppDataLow) + "\\VRChat\\VRChat\\";
 
-	// AppData\Local(Low)からのパス
-	static std::string ConfigPath	= "\\VRChatAdvancedLauncher\\";
-	static std::string VRC_LogPath	= "\\VRChat\\VRChat\\";
-
-	// 各種Pathを取得
-	m_pAppData_Config = Utils::File::GetAppDataPath(FOLDERID_LocalAppData) + ConfigPath;
-	m_pAppData_VRChat = Utils::File::GetAppDataPath(FOLDERID_LocalAppDataLow) + VRC_LogPath;
-
-	// ドライブのルートの文字列が含まれていなかったら
-	if (m_pAppData_Config.find(":\\") == std::string::npos || m_pAppData_VRChat.find(":\\") == std::string::npos) {
+	// ドライブのルートの文字列が含まれていなかったら / Config用のディレクトリが存在しなかったら
+	if (m_szConfigPath.find(":\\") == std::string::npos || m_szVRChatConfigPath.find(":\\") == std::string::npos)
 		return false;
-	}
-	else if (!Utils::File::IsExistsDirectory(m_pAppData_Config)) {
-		// フォルダの作成とjsonファイルの移動
-		system("setup.bat");
-		remove("setup.bat");
-	}
+	else if (!utils::file::IsExistsDirectory(m_szConfigPath))
+		std::filesystem::create_directory(m_szConfigPath);
 
 	// jsonからVRChatのインストール先を読み取る
-	m_pVRChatInstallPath = cfg.ReadInstallPath(m_pAppData_Config);
+	m_szVRChatIInstallationPath = cfg.ReadInstallPath(m_szConfigPath, m_szConfigFileName);
 
 	// 初回かインストール先が変更された場合
-	if (!Utils::File::IsExistsDirectory(m_pVRChatInstallPath) || !Utils::File::DoesFileExistInDirectory(m_pVRChatInstallPath, "VRChat.exe"))
+	if (!utils::file::IsExistsDirectory(m_szVRChatIInstallationPath) || !utils::file::DoesFileExistInDirectory(m_szVRChatIInstallationPath, "VRChat.exe"))
 	{
-		// VRChat自体のインストール先を取得
-		m_pVRChatInstallPath = FindVRChatInstallationPath();
+		// MsgBox
+		MessageBox(nullptr, "VRChatのインストール先を検索します。\n続けるにはOKを押してください。", "情報", MB_TOPMOST | MB_OK | MB_ICONINFORMATION);
 
-		if (m_pVRChatInstallPath.size() == 0) {
-			MessageBox(nullptr, "VRChatのインストール先が見つかりませんでした。起動後に手動で指定してください。", "ERROR", MB_TOPMOST | MB_OK | MB_ICONERROR);
+		// VRChat自体のインストール先を取得
+		m_szVRChatIInstallationPath = FindVRChatInstallationPath();
+
+		if (m_szVRChatIInstallationPath.size() == 0) {
+			MessageBox(nullptr, "VRChatのインストール先が見つかりませんでした。JSONファイルに直接記述してください", "ERROR", MB_TOPMOST | MB_OK | MB_ICONERROR);
 		}	
 		else {
+
+			std::string configFilePath = m_szConfigPath + "config.json";
+
+			// json ファイルを作成
+			if (!utils::file::IsExistsFile(configFilePath)) {
+				std::ofstream fFile(configFilePath);
+				fFile.close();
+
+				// jsonに書き込む
+				std::ifstream in(configFilePath);
+				if (!in || in.peek() == std::ifstream::traits_type::eof()) 
+				{
+					std::cout << "[ LOG ] create and write json file." << std::endl;
+					std::ofstream out(configFilePath);
+					json default_config = get_default_config();
+					out << default_config.dump(4);
+				}
+			}
+
 			// jsonに保存
-			cfg.WriteInstallPath(m_pAppData_Config, m_pVRChatInstallPath);
+			cfg.WriteInstallPath(m_szConfigPath, m_szConfigFileName, m_szVRChatIInstallationPath);
 		}
 	}
 
 	// モニターの数を取得
-	EnumDisplayMonitors(NULL, NULL, MonitorEnumProc, reinterpret_cast<LPARAM>(&m_MonitorCount));
+	EnumDisplayMonitors(NULL, NULL, MonitorEnumProc, reinterpret_cast<LPARAM>(&m_iMonitorCount));
 
 	// config.jsonから設定をロード
-	cfg.LoadSetting(m_pAppData_Config, m_ConfigFileName);
+	cfg.LoadSetting(m_szConfigPath, m_szConfigFileName);
 
 	return true;
 }
 
 void AdvancedLauncher::ProcessThread()
 {
-	cfg.SaveSetting(m_pAppData_Config, m_ConfigFileName);
+	cfg.SaveSetting(m_szConfigPath, m_szConfigFileName);
 
-	std::string run_cmd = m_pVRChatInstallPath + "\\" + BuildCommand();
-	Utils::Process::StartProcess(run_cmd);
-
-	//while (!Utils::Process::IsProcessRunning("VRChat.exe"))
-		//std::this_thread::sleep_for(std::chrono::seconds(5));
+	std::string run_cmd = m_szVRChatIInstallationPath + "\\" + BuildCommand();
+	utils::process::StartProcess(run_cmd);
 }
 
 std::string AdvancedLauncher::FindVRChatInstallationPath()
@@ -78,9 +101,9 @@ std::string AdvancedLauncher::FindVRChatInstallationPath()
 	std::vector<std::string> steam_dir_list;
 
 	// Steamライブラリを探す
-	for (const auto& drive_root : Utils::GetPhysicalDriveList()) 
+	for (const auto& drive_root : utils::GetPhysicalDriveList()) 
 	{
-		auto result = Utils::File::FindDirectory(drive_root, targetDir);
+		auto result = utils::file::FindDirectory(drive_root, targetDir);
 
 		if (result)
 			steam_dir_list.push_back(*result);
@@ -95,12 +118,16 @@ std::string AdvancedLauncher::FindVRChatInstallationPath()
 			auto vrc_dir = std::filesystem::directory_iterator(common_path);
 
 			for (const auto& file : vrc_dir) {
-				if (file.path().string().find("VRChat") != std::string::npos)
+				if (file.path().string().find("VRChat") != std::string::npos) {
+					steam_dir_list.clear();
 					return file.path().string();
+				}
 			}
 		}
 	}
 
+	steam_dir_list.clear();
+	
 	return std::string();
 }
 
@@ -115,8 +142,33 @@ std::string AdvancedLauncher::BuildCommand()
 	if (g.g_DesktopMode) vOut << " --no-vr";
 
 	vOut << " -screen-fullscreen " + std::to_string((int)g.g_FullScreen);
-	vOut << " -screen-width " + std::to_string((int)GetSystemMetrics(SM_CXSCREEN));
-	vOut << " -screen-height " + std::to_string((int)GetSystemMetrics(SM_CYSCREEN));
+
+	std::string width  = " -screen-width ";
+	std::string height = " -screen-height ";
+
+	switch (g.g_WindowSize)
+	{
+	case 0:
+		width  += std::to_string((int)GetSystemMetrics(SM_CXSCREEN));
+		height += std::to_string((int)GetSystemMetrics(SM_CYSCREEN));
+		break;
+	case 1:
+		width += std::to_string((int)480);
+		height += std::to_string((int)270);
+		break;
+	case 2:
+		width += std::to_string((int)1280);
+		height += std::to_string((int)720);
+		break;
+	case 3:
+		width += std::to_string((int)1920);
+		height += std::to_string((int)1080);
+		break;
+	default:
+		break;
+	}
+	vOut << width;
+	vOut << height;
 
 	std::string monitor_str = " -monitor " + std::to_string((int)g.g_Monitor + 1);
 	vOut << monitor_str;
@@ -151,6 +203,8 @@ std::string AdvancedLauncher::BuildCommand()
 	}
 
 	vOut << "\"";
+
+	std::cout << "Builded Command : " << vOut.str() << std::endl;
 
 	return vOut.str();
 }

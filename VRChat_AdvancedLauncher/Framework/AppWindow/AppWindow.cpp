@@ -25,7 +25,7 @@ bool AppWindow::InitWindow()
     }
 
     RegisterClassExW(&wc);
-    hwnd = CreateWindowW(wc.lpszClassName, wc.lpszMenuName, WS_MINIMIZEBOX | WS_SYSMENU, 200, 200, 800, 500, nullptr, nullptr, wc.hInstance, nullptr);
+    hwnd = CreateWindowW(wc.lpszClassName, wc.lpszMenuName, WS_MINIMIZEBOX | WS_SYSMENU, 200, 200, 450, 500, nullptr, nullptr, wc.hInstance, nullptr);
 
     // Initialize Direct3D
     if (!CreateDeviceD3D(hwnd))
@@ -158,7 +158,7 @@ LRESULT WINAPI WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
         break;
     case WM_CLOSE:
         PostQuitMessage(0);
-        g.ApplicationActive = false;
+        g.m_ApplicationActive = false;
         return 0;
     case WM_DESTROY:
         PostQuitMessage(0);
