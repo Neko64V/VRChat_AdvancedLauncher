@@ -19,7 +19,6 @@ void ConfigManager::LoadSetting(const std::string path, const std::string filena
     g.g_MaxFPS = JSON["MaxFPS"];
     g.g_MaxFPSEnable = JSON["MaxFPSEnable"];
     g.g_Monitor = JSON["Monitor"];
-    g.g_OfflineTest = JSON["OffliteTest"];
     g.g_ProfileID = JSON["ProfileID"];
     g.g_WorldTest = JSON["WorldTest"];
     g.g_WindowSize = JSON["WindowSize"];
@@ -44,7 +43,6 @@ void ConfigManager::SaveSetting(const std::string path, const std::string filena
         JSON["MaxFPS"] = g.g_MaxFPS;
         JSON["MaxFPSEnable"] = g.g_MaxFPSEnable;
         JSON["Monitor"] = g.g_Monitor;
-        JSON["OffliteTest"] = g.g_OfflineTest;
         JSON["ProfileID"] = g.g_ProfileID;
         JSON["WorldTest"] = g.g_WorldTest;
         JSON["WindowSize"] = g.g_WindowSize;
@@ -56,7 +54,7 @@ void ConfigManager::SaveSetting(const std::string path, const std::string filena
             std::cout << "[ LOG ] json updated - ConfigManager::SaveSetting()" << std::endl;
         }
         else {
-            std::cerr << "[ LOG ] failed to update json - ConfigManager::SaveSetting()" << std::endl;
+            std::cout << "[ LOG ] failed to update json - ConfigManager::SaveSetting()" << std::endl;
         }
     }
 
@@ -98,10 +96,10 @@ void ConfigManager::WriteInstallPath(const std::string& appdata_local, const std
         std::ofstream outputFile(path, std::ios::trunc);
         if (outputFile.good()) {
             outputFile << j.dump(4);
-            std::cerr << "[ dev ] json updated - ConfigManager::WriteInstallPath()" << std::endl;
+            std::cout << "[ LOG ] json updated - ConfigManager::WriteInstallPath()" << std::endl;
         }
         else {
-            std::cerr << "[ dev ] failed to update json - ConfigManager::WriteInstallPath()" << std::endl;
+            std::cout << "[ LOG ] failed to update json - ConfigManager::WriteInstallPath()" << std::endl;
         }
     }
 

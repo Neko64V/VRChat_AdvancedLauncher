@@ -19,7 +19,6 @@ struct Config
     int  g_WindowSize = 0;
     int  g_MaxFPS = 144;
     int  g_Monitor = 0;
-    bool g_OfflineTest = false;
     bool g_WorldTest = false;
     bool g_AvatarTest = false;
     int  g_ProfileID = 0;

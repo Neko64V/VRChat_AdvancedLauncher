@@ -34,7 +34,6 @@ void AdvancedLauncher::LauncherMenu()
 
     ImGui::TextColored(TitleTextCol, "Test");
     ImGui::Separator();
-    ImGui::Checkbox("Offline", &g.g_OfflineTest);
     ImGui::Checkbox("Avater Test", &g.g_AvatarTest); // --watch-avatars
     ImGui::Checkbox("World Test", &g.g_WorldTest); // --watch-world
 

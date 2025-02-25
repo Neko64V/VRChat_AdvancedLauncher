@@ -18,7 +18,6 @@ json get_default_config() {
 		{ "MaxFPS", 144 },
 		{ "MaxFPSEnable", true },
 		{ "Monitor", 0 },
-		{ "OffliteTest", false },
 		{ "ProfileID", 0 },
 		{ "VRChatPath", "" },
 		{ "WorldTest", false },
@@ -135,8 +134,7 @@ std::string AdvancedLauncher::BuildCommand()
 {
 	std::ostringstream vOut;
 
-	std::string launchApp = g.g_OfflineTest ? "VRChat.exe" : "launch.exe";
-	vOut << launchApp;
+	vOut << "launch.exe";
 	vOut << " \"vrchat://launch/";
 
 	if (g.g_DesktopMode) vOut << " --no-vr";
